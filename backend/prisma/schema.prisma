@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AnimeStatus {
+  AIRING
+  FINISHED
+  UPCOMING
+  HIATUS
+}
+
+model User {
+  id              Int                  @id @default(autoincrement())
+  username        String               @unique
+  email           String               @unique
+  password        String
+  profilePicture  String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  comments        Comment[]
+  animeProgress   UserAnimeProgress[]
+  favoriteAnimes  Anime[]              @relation("UserFavorites")
+}
+
+model Anime {
+  id              Int          @id @default(autoincrement())
+  title           String
+  description     String
+  rating          Float?
+  author          String
+  startedAiring   DateTime
+  finishedAiring  DateTime?
+  status          AnimeStatus
+  thumbnailUrl    String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  seasons         Season[]
+  genres          Genre[]      @relation("AnimeGenres")
+
+  favoritedBy     User[]       @relation("UserFavorites")        // ✅ FIXED
+  userProgress    UserAnimeProgress[]                            // ✅ FIXED
+}
+
+model Genre {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+
+  animes Anime[]  @relation("AnimeGenres")
+}
+
+model Season {
+  id              Int       @id @default(autoincrement())
+  anime           Anime     @relation(fields: [animeId], references: [id])
+  animeId         Int
+  seasonNumber    Int
+  isFinished      Boolean   @default(false)
+  startedAiring   DateTime?
+  finishedAiring  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  episodes        Episode[]
+}
+
+model Episode {
+  id            Int       @id @default(autoincrement())
+  season        Season    @relation(fields: [seasonId], references: [id])
+  seasonId      Int
+  title         String
+  length        Int
+  airedAt       DateTime
+  subUrl        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  comments      Comment[]
+  userProgress  UserAnimeProgress[]                      // ✅ FIXED
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  episode    Episode   @relation(fields: [episodeId], references: [id])
+  episodeId  Int
+  createdAt  DateTime  @default(now())
+}
+
+model UserAnimeProgress {
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+
+  anime        Anime    @relation(fields: [animeId], references: [id])
+  animeId      Int
+
+  episode      Episode  @relation(fields: [episodeId], references: [id])
+  episodeId    Int
+
+  progressTime Int
+  updatedAt    DateTime @updatedAt
+
+  @@id([userId, animeId])
+}
