@@ -6,37 +6,37 @@ const router = Router();
 
 
 // CREATE
-router.post("/add/:title", async (req, res) => {
+router.post("/add/:animeId", async (req, res) => {
+
+  const animeId = parseInt(req.params.animeId);
+  if (isNaN(animeId)) return res.status(400).send("Invalid anime id in request");
+
   const {
     seasonNumber,
-    isFinished = false,
+    isFinished,
     startedAiring,
     finishedAiring,
   } = req.body;
 
-  const { title } = req.params;
-
   try {
-    const anime = await prisma.anime.findFirst({
+    const anime = await prisma.anime.findUnique({
       where: {
-        title: {
-          equals: title,
-          mode: "insensitive",
-        },
-      },
+        id: animeId
+      }
     });
 
     if (!anime) {
-      return res.status(404).json({ error: `No anime found with title: ${title}` });
+      return res.status(404).json({ error: `No anime found with id: ${animeId}` });
     }
 
     const season = await prisma.season.create({
       data: {
-        animeId: anime.id,
-        seasonNumber,
-        isFinished,
-        startedAiring: startedAiring ? new Date(startedAiring) : undefined,
-        finishedAiring: finishedAiring ? new Date(finishedAiring) : undefined,
+        animeId: animeId,
+        seasonNumber: seasonNumber,
+        isFinished: isFinished,
+
+        startedAiring: startedAiring ? new Date(startedAiring) : null,
+        finishedAiring: finishedAiring ? new Date(finishedAiring) : null,
       },
     });
 
@@ -51,13 +51,14 @@ router.post("/add/:title", async (req, res) => {
 // DELETE
 router.delete("/delete/:id", async (req, res) => {
   const seasonId = parseInt(req.params.id);
+  if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
 
   try {
     const deleted = await prisma.season.delete({
       where: { id: seasonId },
     });
 
-    return res.status(200).json({ message: "Season deleted successfully.", deleted });
+    return res.status(200).json({ message: "Season deleted successfully.", deleted: deleted });
   } catch (error) {
     console.error("Error deleting season:", error);
     if (error.code === "P2025") {
@@ -71,6 +72,7 @@ router.delete("/delete/:id", async (req, res) => {
 // UPDATE
 router.put("/update/:id", async (req, res) => {
   const seasonId = parseInt(req.params.id);
+  if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
 
   const {
     animeId,
@@ -84,9 +86,10 @@ router.put("/update/:id", async (req, res) => {
     const updated = await prisma.season.update({
       where: { id: seasonId },
       data: {
-        animeId,
-        seasonNumber,
-        isFinished,
+        animeId: animeId,
+        seasonNumber: seasonNumber,
+        isFinished: isFinished,
+
         startedAiring: startedAiring ? new Date(startedAiring) : null,
         finishedAiring: finishedAiring ? new Date(finishedAiring) : null,
       },
@@ -103,32 +106,36 @@ router.put("/update/:id", async (req, res) => {
 });
 
 
-// READ
-router.get("/all/:title", async (req, res) => {
-  const { title } = req.params;
+router.patch("/update/:id", async (req, res) => {
+  const seasonId = parseInt(req.params.id);
+  if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
+
+  const {
+    animeId,
+    seasonNumber,
+    isFinished,
+    startedAiring,
+    finishedAiring,
+  } = req.body;
 
   try {
-    const anime = await prisma.anime.findFirst({
-      where: {
-        title: {
-          equals: title,
-          mode: "insensitive",
-        },
-      },
+    const updateData = {
+      ...(animeId !== undefined && isNaN(parseInt(animeId)) !== true && { animeId: parseInt(animeId) }),
+      ...(seasonNumber !== undefined && { seasonNumber }),
+      ...(isFinished !== undefined && { isFinished }),
+      
+      ...(startedAiring !== undefined && (startedAiring === null ? null : { startedAiring: new Date(startedAiring) })),
+      ...(finishedAiring !== undefined && (finishedAiring === null ? null : { finishedAiring: new Date(finishedAiring) })),
+    };
+
+    const updatedSeason = await prisma.season.update({
+      where: { id: seasonId },
+      data: updateData,
     });
 
-    if (!anime) {
-      return res.status(404).json({ error: `Anime not found: ${title}` });
-    }
-
-    const seasons = await prisma.season.findMany({
-      where: { animeId: anime.id },
-      orderBy: { seasonNumber: "asc" },
-    });
-
-    return res.json({ anime: anime.title, seasons });
+    return res.status(200).json(updatedSeason);
   } catch (error) {
-    console.error("Error fetching seasons:", error);
+    console.error("Error updating season:", error);
     return res.status(500).json({ error: error.message });
   }
 });
