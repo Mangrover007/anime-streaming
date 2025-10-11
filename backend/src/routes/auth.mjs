@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../index.mjs";
 import bcryptjs from "bcryptjs";
 
-import { validatePayload } from "../middlewares/validate.js";
-import { loginSchema, registerSchema } from "../schemas/validators.js";
+import { validatePayload } from "../middlewares/validate.mjs";
+import { loginSchema, registerSchema } from "../schemas/validators.mjs";
 
 const router = Router();
 
@@ -72,7 +72,12 @@ router.post("/register", validatePayload(registerSchema) ,async (req, res) => {
       username,
       email,
       password: hashedPassword,
-    }
+      role: {
+        connect: {
+          id: 1
+        }
+      }
+    },
   });
 
   const token = jwt.sign(

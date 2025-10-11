@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 interface AnimeData {
@@ -7,7 +8,7 @@ interface AnimeData {
   author: string;
   startedAiring: string;
   finishedAiring: string;
-  status: 'ONGOING' | 'FINISHED' | 'CANCELLED';
+  status: 'AIRING' | 'FINISHED' | 'UPCOMING' | 'HIATUS';
   thumbnailUrl: string;
 }
 
@@ -19,7 +20,7 @@ const AddAnimeForm: React.FC = () => {
     author: '',
     startedAiring: '',
     finishedAiring: '',
-    status: 'ONGOING', // Default status
+    status: 'AIRING', // Default status
     thumbnailUrl: '',
   });
 
@@ -42,15 +43,11 @@ const AddAnimeForm: React.FC = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/anime', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formattedData),
-      });
+      const response = await axios.post("http://localhost:3000/admin", formattedData, {
+        withCredentials: true
+      })
 
-      if (response.ok) {
+      if (response.status===201) {
         alert('Anime added successfully!');
         setAnimeData({
           title: '',
@@ -59,7 +56,7 @@ const AddAnimeForm: React.FC = () => {
           author: '',
           startedAiring: '',
           finishedAiring: '',
-          status: 'ONGOING',
+          status: 'AIRING',
           thumbnailUrl: '',
         });
       } else {
@@ -131,7 +128,7 @@ const AddAnimeForm: React.FC = () => {
         <div>
           <label htmlFor="startedAiring" className="block text-sm font-medium text-gray-700">Started Airing</label>
           <input
-            type="datetime-local"
+            type="date" // Changed to date input type for simplicity
             name="startedAiring"
             id="startedAiring"
             value={animeData.startedAiring}
@@ -144,7 +141,7 @@ const AddAnimeForm: React.FC = () => {
         <div>
           <label htmlFor="finishedAiring" className="block text-sm font-medium text-gray-700">Finished Airing</label>
           <input
-            type="datetime-local"
+            type="date" // Changed to date input type for simplicity
             name="finishedAiring"
             id="finishedAiring"
             value={animeData.finishedAiring}
@@ -163,9 +160,10 @@ const AddAnimeForm: React.FC = () => {
             required
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           >
-            <option value="ONGOING">Ongoing</option>
-            <option value="FINISHED">Finished</option>
-            <option value="CANCELLED">Cancelled</option>
+            <option value="AIRING">AIRING</option>
+            <option value="HIATUS">HIATUS</option>
+            <option value="FINISHED">FINISHED</option>
+            <option value="UPCOMING">UPCOMING</option>
           </select>
         </div>
 

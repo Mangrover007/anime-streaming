@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AnimeStatus" AS ENUM ('airing', 'finished', 'upcoming', 'hiatus');
+CREATE TYPE "AnimeStatus" AS ENUM ('AIRING', 'FINISHED', 'UPCOMING', 'HIATUS');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -8,7 +8,6 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "profilePicture" TEXT,
-    "dateOfBirth" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -22,8 +21,8 @@ CREATE TABLE "Anime" (
     "description" TEXT NOT NULL,
     "rating" DOUBLE PRECISION,
     "author" TEXT NOT NULL,
-    "startedAiring" TIMESTAMP(3) NOT NULL,
-    "finishedAiring" TIMESTAMP(3),
+    "startedAiring" DATE NOT NULL,
+    "finishedAiring" DATE,
     "status" "AnimeStatus" NOT NULL,
     "thumbnailUrl" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,8 +45,8 @@ CREATE TABLE "Season" (
     "animeId" INTEGER NOT NULL,
     "seasonNumber" INTEGER NOT NULL,
     "isFinished" BOOLEAN NOT NULL DEFAULT false,
-    "startedAiring" TIMESTAMP(3),
-    "finishedAiring" TIMESTAMP(3),
+    "startedAiring" DATE,
+    "finishedAiring" DATE,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -60,7 +59,7 @@ CREATE TABLE "Episode" (
     "seasonId" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "length" INTEGER NOT NULL,
-    "airedAt" TIMESTAMP(3) NOT NULL,
+    "airedAt" DATE NOT NULL,
     "subUrl" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -113,6 +112,9 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Anime_title_key" ON "Anime"("title");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Genre_name_key" ON "Genre"("name");
 
 -- CreateIndex
@@ -153,3 +155,4 @@ ALTER TABLE "_UserFavorites" ADD CONSTRAINT "_UserFavorites_A_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "_UserFavorites" ADD CONSTRAINT "_UserFavorites_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+

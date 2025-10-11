@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./App.css";
 import axios from "axios";
-import AddAnimeForm from "./components/Temp";
+import AddAnimeForm from "./components/temp/AddAnime";
+import DeleteAnime from "./components/temp/DeleteAnime";
+import AllAnimeList from "./components/temp/AllAnimeList";
+import AnimeSearch from "./components/temp/AnimeSearch";
 
 const App = () => {
 
@@ -64,7 +67,7 @@ const App = () => {
 
 
   return <div className="grid place-items-center h-full">
-    {/* <div>
+    <div>
       <h1 className="text-6xl text-center mb-8">Register</h1>
       <form action="" onSubmit={handleRegisterSubmit} className="grid place-items-center gap-2">
         <input
@@ -115,8 +118,23 @@ const App = () => {
         />
         <button className="bg-cyan-300 cursor-pointer p-2">Submit</button>
       </form>
-    </div> */}
+    </div>
+    <button onClick={async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/admin", {
+          withCredentials: true
+        })
+        console.log(res);
+      } catch (e) {
+        console.log("no idk something happended with ping adming orn ot", e);
+      }
+    }}>
+      PING ADMIN OR NOT
+    </button>
     <AddAnimeForm />
+    <DeleteAnime />
+    <AllAnimeList />
+    <AnimeSearch />
   </div>
 }
 
