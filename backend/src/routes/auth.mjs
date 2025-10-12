@@ -5,6 +5,7 @@ import bcryptjs from "bcryptjs";
 import { validatePayload } from "../middlewares/validate.mjs";
 import { loginSchema, registerSchema } from "../schemas/validators.mjs";
 import { PrismaClient } from "@prisma/client";
+import { userRole } from "../utils/userRole.mjs";
 
 const prisma = new PrismaClient();
 
@@ -50,6 +51,14 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     sameSite: "lax"
   });
+
+  const temp = await userRole(findUser.username);
+  if (temp === "ADMIN") {
+    console.log("ADMIN log in", findUser.username);
+  }
+  else {
+    console.log("USER log in", findUser.username);
+  }
 
   res.send("Login successful");
 });
