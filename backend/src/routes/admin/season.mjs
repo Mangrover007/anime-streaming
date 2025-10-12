@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 
+// TODO: add input validation for the routes
+
 const prisma = new PrismaClient();
 const router = Router();
 

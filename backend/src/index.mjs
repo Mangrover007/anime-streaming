@@ -2,18 +2,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { PrismaClient } from "@prisma/client";
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 import express from "express";
 import cookieParser from "cookie-parser";
-import { router } from "./routes.mjs";
+import { routes } from "./routes.mjs";
 
 const app = express();
 
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(router);
+app.use(routes);
 
 app.get("/", (req, res) => {
   res.send("OK");

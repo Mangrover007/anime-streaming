@@ -18,16 +18,6 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// GET All Genres
-router.get("/all", async (req, res) => {
-  try {
-    const genres = await prisma.genre.findMany();
-    res.json(genres);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // UPDATE Genre
 router.put("/update/:id", async (req, res) => {
   const genreId = parseInt(req.params.id);

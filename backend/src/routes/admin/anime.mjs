@@ -1,15 +1,13 @@
 import { Router } from "express";
-import { PrismaClient, AnimeStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 // TODO: add genre connect/disconnect feature
+// TODO: add input validation for the routes
 
 const prisma = new PrismaClient();
 const router = Router();
 
 
-/**
- * POST - add a new record in Anime table
- */
 router.post("/add", async (req, res) => {
   const {
     title,

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 
+// TODO: add input validation for the routes
+
 const prisma = new PrismaClient();
 const router = Router();
 
@@ -41,71 +43,6 @@ router.post("/add", async (req, res) => {
 });
 
 
-router.get("/all", async (req, res) => {
-  try {
-    const episodes = await prisma.episode.findMany({
-      include: {
-        season: {
-          select: {
-            seasonNumber: true,
-            anime: { select: { title: true } },
-          },
-        },
-      },
-      orderBy: { airedAt: "asc" },
-    });
-
-    return res.json(episodes);
-  } catch (error) {
-    console.error("Error fetching episodes:", error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-
-router.get("/season/:id", async (req, res) => {
-  const seasonId = parseInt(req.params.id);
-
-  try {
-    const episodes = await prisma.episode.findMany({
-      where: { seasonId },
-      orderBy: { episodeNumber: "asc" },
-    });
-
-    return res.json(episodes);
-  } catch (error) {
-    console.error("Error fetching episodes:", error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-
-router.get("/get/:id", async (req, res) => {
-  const episodeId = parseInt(req.params.id);
-
-  try {
-    const episode = await prisma.episode.findUnique({
-      where: { id: episodeId },
-      include: {
-        season: {
-          select: {
-            seasonNumber: true,
-            anime: { select: { title: true } },
-          },
-        },
-      },
-    });
-
-    if (!episode) return res.status(404).json({ error: "Episode not found." });
-
-    return res.json(episode);
-  } catch (error) {
-    console.error("Error fetching episode:", error);
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-
 router.patch("/update/:id", async (req, res) => {
   const episodeId = parseInt(req.params.id);
   const {
@@ -140,6 +77,7 @@ router.patch("/update/:id", async (req, res) => {
 
 router.delete("/delete/:id", async (req, res) => {
   const episodeId = parseInt(req.params.id);
+  if (isNaN(episodeId)) return res.status(400).send("Invalid episode id");
 
   try {
     const deleted = await prisma.episode.delete({

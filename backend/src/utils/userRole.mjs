@@ -1,4 +1,6 @@
-import { prisma } from "../index.mjs";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 /**
  * throws error if user not found
