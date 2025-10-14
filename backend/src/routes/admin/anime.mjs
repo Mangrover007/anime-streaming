@@ -137,14 +137,20 @@ router.patch("/update/:id", async (req, res) => {
     if (!existing) return res.status(404).json({ error: "Anime not found." });
 
     const updateData = {
-      ...(title !== undefined && { title }),
-      ...(description !== undefined && { description }),
-      ...(rating !== undefined && { rating }),
-      ...(author !== undefined && { author }),
-      ...(startedAiring !== undefined && { startedAiring: new Date(startedAiring) }),
-      ...(finishedAiring !== undefined && { finishedAiring: new Date(finishedAiring) }),
-      ...(status !== undefined && { status }),
-      ...(thumbnailUrl !== undefined && { thumbnailUrl }),
+      ...(title !== undefined && title.trim() !== "" && { title: title.trim() }),
+      ...(description !== undefined && description.trim() !== "" && { description: description.trim() }),
+      ...(author !== undefined && author.trim() !== "" && { author: author.trim() }),
+      ...(status !== undefined && status.trim() !== "" && { status: status.trim() }),
+      ...(thumbnailUrl !== undefined && thumbnailUrl.trim() !== "" && { thumbnailUrl: thumbnailUrl.trim() }),
+
+      ...(rating !== undefined && !isNaN(parseFloat(rating)) && { rating: parseFloat(rating) }),
+
+      ...(startedAiring !== undefined && startedAiring.trim() !== "" && {
+        startedAiring: new Date(startedAiring),
+      }),
+      ...(finishedAiring !== undefined && finishedAiring.trim() !== "" && {
+        finishedAiring: new Date(finishedAiring),
+      }),
     };
 
     const updated = await prisma.anime.update({

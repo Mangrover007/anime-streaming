@@ -4,6 +4,8 @@ import { adminRoute } from "./routes/admin.mjs";
 import { commonRoute } from "./routes/common.mjs";
 import { protectedRoutes } from "./routes/protected.mjs";
 
+// TODO: !!! IMPORTANT !!! add "PUBLISHER" role who can upload videos (frontend -> multer -> cloudinary -> db), "ADMIN" cannot change video link once established by publisher - they CAN provide SUBTITLE LINKS
+
 const router = Router();
 
 router.use(commonRoute); // common routes like view anime, seasons, episodes, etc

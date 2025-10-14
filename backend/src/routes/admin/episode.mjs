@@ -67,6 +67,8 @@ router.patch("/update/:id", async (req, res) => {
       },
     });
 
+    console.log("updated - ", updated);
+
     return res.json(updated);
   } catch (error) {
     console.error("Error updating episode:", error);

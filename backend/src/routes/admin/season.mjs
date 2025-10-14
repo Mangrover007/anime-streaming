@@ -104,6 +104,8 @@ router.put("/update/:id", async (req, res) => {
       return res.status(404).json({ error: "Season not found." });
     }
     return res.status(500).json({ error: error.message });
+    // P2003 -> foreign key constriant violation -> animeId DNE in anime table
+    // P2025 -> no record found for update -> seasonId DNE in season table
   }
 });
 
@@ -139,6 +141,8 @@ router.patch("/update/:id", async (req, res) => {
   } catch (error) {
     console.error("Error updating season:", error);
     return res.status(500).json({ error: error.message });
+    // P2003 -> foreign key constriant violation -> animeId DNE in anime table
+    // P2025 -> no record found for update -> seasonId DNE in season table
   }
 });
 
