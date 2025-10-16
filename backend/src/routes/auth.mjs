@@ -7,6 +7,8 @@ import { loginSchema, registerSchema } from "../schemas/validators.mjs";
 import { PrismaClient } from "@prisma/client";
 import { userRole } from "../utils/userRole.mjs";
 
+import { verifyToken } from "../middlewares/verifyToken.mjs";
+
 const prisma = new PrismaClient();
 
 const router = Router();
@@ -60,7 +62,7 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
     console.log("USER log in", findUser.username);
   }
 
-  res.send("Login successful");
+  res.send(findUser);
 });
 
 
@@ -115,7 +117,37 @@ router.post("/register", validatePayload(registerSchema) ,async (req, res) => {
     sameSite: "lax"
   });
 
-  res.status(201).send("User registered successfully");
+  res.status(201).send(newUser);
+});
+
+router.get("/who", async (req, res) => {
+  const { token } = req.cookies;
+  if (!token) return res.status(400).send("no token");
+  const tokenPayload = jwt.verify(token, process.env.JWT_SECRET);
+  if (!tokenPayload) return res.status(401).send("youre nobody");
+  const findUser = await prisma.user.findUnique({
+    where: {
+      id: tokenPayload.id
+    }
+  });
+  if (!findUser) return res.status(404).send("you do not exist");
+  return res.send(findUser);
+});
+
+router.get("/logout", verifyToken, async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.status(200).send({ message: "Logged out successfully" });
 });
 
 export { router as authRoute };
