@@ -41,21 +41,38 @@ router.get("/all", async (req, res) => {
   }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:name", async (req, res) => {
   try {
-    const animeId = parseInt(req.params.id);
-    if (isNaN(animeId)) return res.status(400).send("Invalid anime id");
+    const title = req.params.name;
+    if (!title) return res.status(400).send("Invalid anime name");
     const findAnime = await prisma.anime.findUnique({
       where: {
-        id: animeId
+        title: title
       }
     });
-    if (!findAnime) return res.status(404).send(`No anime found with id - ${animeId}`);
+    if (!findAnime) return res.status(404).send(`No anime found with name - ${title}`);
     return res.status(200).send(findAnime);
   } catch (error) {
-    console.log("anime /:id error", error);
-    res.status(500).send("caught error in anime /:id");
+    console.log("anime /:name error", error);
+    res.status(500).send("caught error in anime /:name");
   }
 });
+
+// router.get("/:id", async (req, res) => {
+//   try {
+//     const animeId = parseInt(req.params.id);
+//     if (isNaN(animeId)) return res.status(400).send("Invalid anime id");
+//     const findAnime = await prisma.anime.findUnique({
+//       where: {
+//         id: animeId
+//       }
+//     });
+//     if (!findAnime) return res.status(404).send(`No anime found with id - ${animeId}`);
+//     return res.status(200).send(findAnime);
+//   } catch (error) {
+//     console.log("anime /:id error", error);
+//     res.status(500).send("caught error in anime /:id");
+//   }
+// });
 
 export { router as commonAnime };

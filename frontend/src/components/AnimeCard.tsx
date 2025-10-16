@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
 
 type AnimeCardProps = {
-  id: number;
   imgUrl: string;
   title: string;
 };
 
-const AnimeCard = ({ id, imgUrl, title }: AnimeCardProps) => {
+const AnimeCard = ({ imgUrl, title }: AnimeCardProps) => {
   return (
     <Link
-      to={`/anime/${id}`}
+      to={`/${title}`}
       className="w-full max-w-xs bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-100 block"
     >
       <img

@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+* {
+  box-sizing: border-box;
+}
+
 /* Custom Text Shadow */
 .text-shadow-red {
   text-shadow: 2px 2px 4px rgba(220, 38, 38, 0.7); /* Red shadow */
@@ -20,7 +24,6 @@
 .text-shadow-black {
   text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8); /* Increased blur and opacity */
 }
-
 
 .text-shadow-xl {
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4); /* Extra large shadow */

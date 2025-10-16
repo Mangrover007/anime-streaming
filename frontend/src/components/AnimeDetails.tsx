@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { COMMON_URL } from "../api"; // Assuming this is where your API is defined
 import type { Anime } from "./Home";
+import { PORTAL } from "../App";
 
 export type Season = {
   id: number;
@@ -15,19 +16,30 @@ export type Season = {
 };
 
 const AnimeDetails = () => {
-  const { id } = useParams<{ id: string }>(); // Get the anime ID from the URL
+  const { animeName } = useParams<{ animeName: string }>(); // Get the anime ID from the URL
   const [anime, setAnime] = useState<Anime | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [seasons, setSeasons] = useState<Season[]>([]);
 
+  const { seasonList } = useContext(PORTAL);
+
+  useEffect(() => {
+    if (seasons.length !== 0) {
+      seasonList.current = seasons
+      console.log("update or not")
+      console.log(seasonList.current);
+    }
+    // console.log("THIS IS SEASONS", seasons);
+  }, [seasons]);
+
   useEffect(() => {
     async function getSeasons() {
       if (anime) {
-        const res = await COMMON_URL.get(`/season/${anime?.id}`)
+        const res = await COMMON_URL.get(`/season/${anime.title}`)
         setSeasons(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       }
     }
     getSeasons();
@@ -37,7 +49,7 @@ const AnimeDetails = () => {
     const fetchAnimeDetails = async () => {
       try {
         setLoading(true);
-        const response = await COMMON_URL.get(`/anime/${id}`);
+        const response = await COMMON_URL.get(`/anime/${animeName}`);
         setAnime(response.data); // Set the fetched data to state
       } catch (err) {
         setError("Failed to fetch anime details.");
@@ -47,10 +59,11 @@ const AnimeDetails = () => {
       }
     };
 
-    if (id) {
+    if (animeName) {
       fetchAnimeDetails();
+      console.log(animeName)
     }
-  }, [id]);
+  }, [animeName]);
 
   const handleFavorite = () => {
     // Add logic for adding to favorites
@@ -199,7 +212,7 @@ const AnimeDetails = () => {
                 seasons.map((season) => (
                   <li key={season.id}>
                     <NavLink
-                      to={`/watch?sid=${season.id}`}
+                      to={`/${anime.title}/watch?sid=${season.id}`}
                       className={({ isActive }) =>
                         `block p-4 rounded-lg transition-colors duration-200 ${isActive ? "bg-gray-600" : "bg-gray-700 hover:bg-gray-600"
                         } text-gray-200`

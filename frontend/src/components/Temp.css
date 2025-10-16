@@ -1,0 +1,10 @@
+/* Define the parent grid container */
+.grid-container {
+  display: grid;
+  grid-template-columns: 300px auto 300px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "box-1 box-2 box-4"
+    "box-1 box-3 box-4";
+  height: 100vh;
+}

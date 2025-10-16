@@ -43,7 +43,6 @@ const Home = () => {
         {animeList.map((anime) => (
           <AnimeCard
             key={anime.id}
-            id={anime.id}
             imgUrl={anime.thumbnailUrl}
             title={anime.title}
           />

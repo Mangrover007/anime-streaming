@@ -4,20 +4,43 @@ const prisma = new PrismaClient();
 
 const router = Router();
 
-router.get("/:animeId", async (req, res) => {
+router.get("/:title", async (req, res) => {
   try {
-    const animeId = parseInt(req.params.animeId);
-    if (isNaN(animeId)) res.status(400).send("Invalid anime id");
+    const title = req.params.title;
+    if (!title) res.status(400).send("Invalid anime title");
+    const findAnime = await prisma.anime.findUnique({
+      where: {
+        title: title
+      }
+    });
+    if (!findAnime) return res.status(404).send("That anime do NOT exist bro");
     const findSeasons = await prisma.season.findMany({
       where: {
-        animeId: animeId
+        animeId: findAnime.id
       }
-    })
+    });
+    console.log(findSeasons);
     res.status(200).json(findSeasons);
   } catch (error) {
-    console.log("caught error in /seasons/:animeId", error);
-    res.status(500).send("caught error in /seasons/:animeId");
+    console.log("caught error in /seasons/:title", error);
+    res.status(500).send("caught error in /seasons/:title");
   }
 });
+
+// router.get("/:animeId", async (req, res) => {
+//   try {
+//     const animeId = parseInt(req.params.animeId);
+//     if (isNaN(animeId)) res.status(400).send("Invalid anime id");
+//     const findSeasons = await prisma.season.findMany({
+//       where: {
+//         animeId: animeId
+//       }
+//     })
+//     res.status(200).json(findSeasons);
+//   } catch (error) {
+//     console.log("caught error in /seasons/:animeId", error);
+//     res.status(500).send("caught error in /seasons/:animeId");
+//   }
+// });
 
 export { router as commonSeason };

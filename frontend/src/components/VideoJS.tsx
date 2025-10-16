@@ -5,10 +5,13 @@ import 'video.js/dist/video-js.css';
 
 type VideoJSProps = {
     options: {
-        sources: string[],
-        autoplay: boolean | "play" | "muted" | "any" | undefined
+        sources: {
+            src: string,
+            type: string
+        }[],
+        autoplay?: boolean | "play" | "muted" | "any" | undefined
     },
-    onReady: ,
+    onReady: (player: Player) => void,
 }
 
 export const VideoJS = (props: VideoJSProps) => {
@@ -22,6 +25,8 @@ export const VideoJS = (props: VideoJSProps) => {
     if (!playerRef.current) {
       // The Video.js player needs to be _inside_ the component el for React 18 Strict Mode. 
       const videoElement = document.createElement("video-js");
+      videoElement.style.height = "100%";
+      videoElement.style.width = '100%';
 
       videoElement.classList.add('vjs-big-play-centered');
       videoRef.current?.appendChild(videoElement);
@@ -36,7 +41,8 @@ export const VideoJS = (props: VideoJSProps) => {
     } else {
       const player = playerRef.current;
 
-      player.autoplay(options.autoplay);
+      if (options.autoplay)
+        player.autoplay(options.autoplay);
       player.src(options.sources);
     }
   }, [options, videoRef]);
@@ -54,8 +60,8 @@ export const VideoJS = (props: VideoJSProps) => {
   }, [playerRef]);
 
   return (
-    <div data-vjs-player>
-      <div ref={videoRef} />
+    <div data-vjs-player className='h-full w-full'>
+      <div ref={videoRef} data-what-the-fuck className='h-full w-full' />
     </div>
   );
 }
