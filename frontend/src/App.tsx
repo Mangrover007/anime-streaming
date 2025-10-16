@@ -1,141 +1,52 @@
-import { useState } from "react";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import "./App.css";
-import axios from "axios";
-import AddAnimeForm from "./components/temp/AddAnime";
-import DeleteAnime from "./components/temp/DeleteAnime";
-import AllAnimeList from "./components/temp/AllAnimeList";
-import AnimeSearch from "./components/temp/AnimeSearch";
+import Landing from "./components/Landing";
+import Home from "./components/Home";
+import Layout from "./layouts/Layout";
+import Watch from "./components/Watch";
+import AnimeDetails from "./components/AnimeDetails";
 
 const App = () => {
 
-  const [registerPayload, setRegisterPayload] = useState({
-    username: "",
-    email: "",
-    password: "",
-  })
-
-  const [loginPayload, setLoginPayload] = useState({
-    email: "",
-    password: "",
-  })
-
-  const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const key = e.target.name;
-    const val = e.target.value;
-    setRegisterPayload(prev => {
-      return {
-        ...prev, [key]: val
-      }
-    });
-  }
-
-  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const key = e.target.name;
-    const val = e.target.value;
-    setLoginPayload(prev => {
-      return {
-        ...prev, [key]: val
-      }
-    });
-  }
-
-  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      const res = await axios.post("http://localhost:3000/auth/register", registerPayload, {
-        withCredentials: true,
-      })
-      console.log(res.data);
-    } catch (err) {
-      console.log("error happened - ", err);
+  const router = createBrowserRouter([
+    {
+      index: true,
+      path: "/",
+      element: <Landing />
+    },
+    {
+      path: "/home",
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Home />
+        },
+      ]
+    },
+    {
+      path: "/anime",
+      element: <Layout />,
+      children: [
+        {
+          path: ":id",
+          element: <AnimeDetails />
+        },
+      ]
+    },
+    {
+      path: "watch",
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Watch />
+        }
+      ]
     }
-  }
+  ]);
 
-  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      const res = await axios.post("http://localhost:3000/auth/login", loginPayload, {
-        withCredentials: true,
-      })
-      console.log(res);
-    } catch (err) {
-      console.log("error happened - ", err);
-    }
-  }
-
-
-  return <div className="grid place-items-center h-full">
-    <div>
-      <h1 className="text-6xl text-center mb-8">Register</h1>
-      <form action="" onSubmit={handleRegisterSubmit} className="grid place-items-center gap-2">
-        <input
-          type="text"
-          name="username"
-          placeholder="username"
-          value={registerPayload.username}
-          onChange={handleRegisterChange}
-          className="border-2 p-2"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="email"
-          value={registerPayload.email}
-          onChange={handleRegisterChange}
-          className="border-2 p-2"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={registerPayload.password}
-          onChange={handleRegisterChange}
-          className="border-2 p-2"
-        />
-        <button className="bg-cyan-300 cursor-pointer p-2">Submit</button>
-      </form>
-    </div>
-    <div>
-      <h1 className="text-6xl text-center mb-8">Login</h1>
-      <form action="" onSubmit={handleLoginSubmit} className="grid place-items-center gap-2">
-        <input
-          type="email"
-          name="email"
-          placeholder="email"
-          value={loginPayload.email}
-          onChange={handleLoginChange}
-          className="border-2 p-2"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={loginPayload.password}
-          onChange={handleLoginChange}
-          className="border-2 p-2"
-        />
-        <button className="bg-cyan-300 cursor-pointer p-2">Submit</button>
-      </form>
-    </div>
-    <button onClick={async () => {
-      try {
-        const res = await axios.get("http://localhost:3000/admin", {
-          withCredentials: true
-        })
-        console.log(res);
-      } catch (e) {
-        console.log("no idk something happended with ping adming orn ot", e);
-      }
-    }}>
-      PING ADMIN OR NOT
-    </button>
-    <AddAnimeForm />
-    <DeleteAnime />
-    <AllAnimeList />
-    <AnimeSearch />
-  </div>
+  return <RouterProvider router={router} />
 }
 
 export default App;
