@@ -54,7 +54,8 @@ const Header = () => {
 
       // debugger
       console.log(res);
-      setSearchAnimeList(res.data);
+      const searchList: Anime[] = res.data;
+      setSearchAnimeList(searchList.slice(0, 3));
     }
     else {
       setSearchAnimeList([])
