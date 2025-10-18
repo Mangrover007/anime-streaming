@@ -26,7 +26,7 @@ const LoginPage = () => {
     const res = await AUTH_URL.post("/login", loginData);
     if (res.status === 200) {
       setUser(res.data);
-      nav("/home");
+      nav(-1);
     }
   };
 

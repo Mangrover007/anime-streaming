@@ -128,6 +128,9 @@ router.get("/who", async (req, res) => {
   const findUser = await prisma.user.findUnique({
     where: {
       id: tokenPayload.id
+    },
+    include: {
+      favoriteAnimes: true
     }
   });
   if (!findUser) return res.status(404).send("you do not exist");

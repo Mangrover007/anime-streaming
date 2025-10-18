@@ -17,16 +17,34 @@ router.get("/", async (req, res) => {
         id: episodeId
       },
       include: {
-        comments: true
+        comments: {
+          include: {
+            user: {
+              select: {
+                username: true,
+                profilePicture: true
+              }
+            }
+          }
+        },
       }
     });
 
     if (!allComments) return res.status(404).send(`No episode found with id - ${episodeId}`);
 
     return res.json({
-      data: allComments.comments,
+      data: allComments.comments.map(comment => ({
+        id: comment.id,
+        content: comment.content,
+        createdAt: comment.createdAt,
+        user: {
+          username: comment.user.username,
+          profilePicture: comment.user.profilePicture
+        }
+      })),
       metadata: ""
     });
+
   } catch (error) {
     console.log("caught error in /comment GET", error);
     return res.status(500).send({

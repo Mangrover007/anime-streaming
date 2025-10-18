@@ -7,7 +7,7 @@ const router = Router();
 /**
  * GET all episodes of a season (seasonId)
  */
-router.get("/:seasonId", async (req, res) => {
+router.get("/:seasonId/all", async (req, res) => {
   try {
     const seasonId = parseInt(req.params.seasonId);
     if (isNaN(seasonId)) res.status(400).send("Invalid anime id");
@@ -18,8 +18,25 @@ router.get("/:seasonId", async (req, res) => {
     })
     res.status(200).json(findEpisodes);
   } catch (error) {
-    console.log("caught error in /seasons/:seasonId", error);
-    res.status(500).send("caught error in /seasons/:seasonId");
+    console.log("caught error in /seasons/:seasonId/all", error);
+    res.status(500).send("caught error in /seasons/:seasonId/all");
+  }
+});
+
+router.get("/:episodeId", async (req, res) => {
+  try {
+    const episodeId = parseInt(req.params.episodeId);
+    if (isNaN(episodeId)) res.status(400).send("Invalid episode id");
+    const findEpisode = await prisma.episode.findUnique({
+      where: {
+        id: episodeId
+      },
+    })
+    console.log("EPISODE SERVED", findEpisode);
+    res.status(200).json(findEpisode);
+  } catch (error) {
+    console.log("caught error in /seasons/:episodeId", error);
+    res.status(500).send("caught error in /seasons/:episodeId");
   }
 });
 

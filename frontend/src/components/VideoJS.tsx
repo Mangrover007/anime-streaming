@@ -6,7 +6,7 @@ import 'video.js/dist/video-js.css';
 type VideoJSProps = {
     options: {
         sources: {
-            src: string,
+            src: string | undefined,
             type: string
         }[],
         autoplay?: boolean | "play" | "muted" | "any" | undefined

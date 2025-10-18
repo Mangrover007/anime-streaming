@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     const {
       content
     } = req.body;
-    
+
     const createComment = await prisma.comment.create({
       data: {
         content: content,
@@ -28,7 +28,11 @@ router.post("/", async (req, res) => {
       }
     });
 
-    return res.json(createComment);
+    return res.json({
+      content: createComment.content,
+      username: req.user.username,
+      createdAt: createComment.createdAt,
+    });
   } catch (error) {
     console.log("caught error in /comment POST", error);
     return res.status(500).send("caught error in /comment POST");
@@ -43,7 +47,7 @@ router.patch("/", async (req, res) => {
 
     if (isNaN(commentId)) return res.status(400).send("Invalid comment id");
     if (isNaN(userId)) return res.status(400).send("Invalid user id");
-    if (!content || content.length===0) return res.status(400).send("content is required and not empty");
+    if (!content || content.length === 0) return res.status(400).send("content is required and not empty");
 
     const updateComment = await prisma.comment.update({
       where: {
@@ -84,4 +88,4 @@ router.delete("/", async (req, res) => {
   }
 });
 
-export { router as userRoute };
+export { router as userCommentRoute };

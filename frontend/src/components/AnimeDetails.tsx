@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import { COMMON_URL } from "../api"; // Assuming this is where your API is defined
+import { COMMON_URL, PROT_URL } from "../api"; // Assuming this is where your API is defined
 import type { Anime } from "./Home";
 import { PORTAL } from "../App";
 
@@ -23,26 +23,43 @@ const AnimeDetails = () => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [seasons, setSeasons] = useState<Season[]>([]);
 
-  const { seasonList } = useContext(PORTAL);
+  const { seasonList, user } = useContext(PORTAL);
 
   useEffect(() => {
     if (seasons.length !== 0) {
       seasonList.current = seasons
-      console.log("update or not")
-      console.log(seasonList.current);
+      // console.log("update or not")
+      // console.log(seasonList.current);
     }
     // console.log("THIS IS SEASONS", seasons);
   }, [seasons]);
 
+  async function getSeasons() {
+    if (anime) {
+      const res = await COMMON_URL.get(`/season/${anime.title}`)
+      setSeasons(res.data);
+      // console.log(res.data);
+    }
+  }
+
+  function isCurrentAnimeFavorite() {
+    const findIndex = user?.favoriteAnimes?.findIndex(favAnime => {
+      return favAnime.id === anime?.id
+    })
+    console.log(findIndex !== -1, "THIS IS WHAT WE CALL SHIT", user?.favoriteAnimes);
+    return findIndex !== -1
+  }
+
   useEffect(() => {
-    async function getSeasons() {
-      if (anime) {
-        const res = await COMMON_URL.get(`/season/${anime.title}`)
-        setSeasons(res.data);
-        // console.log(res.data);
+    if (anime) {
+      getSeasons();
+      if (isCurrentAnimeFavorite()) { 
+        setIsFavorite(true);
+      }
+      else {
+        setIsFavorite(false);
       }
     }
-    getSeasons();
   }, [anime]);
 
   useEffect(() => {
@@ -50,7 +67,7 @@ const AnimeDetails = () => {
       try {
         setLoading(true);
         const response = await COMMON_URL.get(`/anime/${animeName}`);
-        setAnime(response.data); // Set the fetched data to state
+        setAnime(response.data);
       } catch (err) {
         setError("Failed to fetch anime details.");
         console.error(err);
@@ -65,11 +82,44 @@ const AnimeDetails = () => {
     }
   }, [animeName]);
 
-  const handleFavorite = () => {
-    // Add logic for adding to favorites
-    setIsFavorite((prev) => !prev); // Toggle favorite for now
-    console.log(isFavorite ? "Removed from favorites" : "Added to favorites");
-  };
+  async function handleFavorite() {
+    if (!isFavorite) {
+      const res = await PROT_URL.post("/anime/add-fav", {
+        animeId: anime?.id,
+        userId: user?.id
+      });
+      console.log(res.data);
+      if (res.status === 200) {
+        if (anime && user) {
+          // lil cp :)
+          setIsFavorite(true);
+          user.favoriteAnimes.push(anime);
+          const addedAnimeSet = new Set<number>();
+          user.favoriteAnimes = user.favoriteAnimes.filter(favAnime => {
+            if (!addedAnimeSet.has(favAnime.id)) {
+              addedAnimeSet.add(favAnime.id);
+              return favAnime;
+            }
+          });
+        }
+      }
+    }
+    else {
+      console.log("removing or nah")
+      const res = await PROT_URL.post("/anime/remove-fav", {
+        animeId: anime?.id,
+        userId: user?.id
+      });
+      if (res.status === 200) {
+        if (anime && user) {
+          setIsFavorite(false);
+          user.favoriteAnimes = user.favoriteAnimes.filter(favAnime => {
+            return favAnime.id !== anime.id;
+          });
+        }
+      }
+    }
+  }
 
   const handleEditClick = (field: string) => {
     console.log(`Edit ${field}`);
@@ -212,7 +262,7 @@ const AnimeDetails = () => {
                 seasons.map((season) => (
                   <li key={season.id}>
                     <NavLink
-                      to={`/${anime.title}/watch?sid=${season.id}`}
+                      to={`/${anime.title}/watch?sid=${season.id}&eid=1`}
                       className={({ isActive }) =>
                         `block p-4 rounded-lg transition-colors duration-200 ${isActive ? "bg-gray-600" : "bg-gray-700 hover:bg-gray-600"
                         } text-gray-200`

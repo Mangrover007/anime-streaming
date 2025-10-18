@@ -34,6 +34,7 @@ router.get("/all", async (req, res) => {
         }
       }
     });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return res.status(200).send(findAllAnime);
   } catch (error) {
     console.log("anime /all/:pageNumber error", error);
