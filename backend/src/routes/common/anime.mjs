@@ -40,7 +40,7 @@ router.get("/all", async (req, res) => {
     console.log("anime /all/:pageNumber error", error);
     res.status(500).send("caught error in anime /all/:pageNumber")
   }
-})
+});
 
 router.get("/:name", async (req, res) => {
   try {

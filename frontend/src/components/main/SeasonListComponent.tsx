@@ -1,6 +1,9 @@
 import { useSearchParams } from "react-router-dom";
 import type { Season } from "../../types";
 import EditButton from "./EditButton";
+import { useContext, useState } from "react";
+import { PORTAL } from "../../App";
+import ReactDOM from "react-dom"
 
 type SeasonListProps = {
   seasonList: Season[];
@@ -8,6 +11,7 @@ type SeasonListProps = {
 
 const SeasonListComponent = ({ seasonList }: SeasonListProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAdmin } = useContext(PORTAL);
 
   return (
     <div
@@ -15,7 +19,10 @@ const SeasonListComponent = ({ seasonList }: SeasonListProps) => {
       className="bg-[#2c293c] border-l border-gray-700 p-4 overflow-y-auto"
     >
       <div className="w-full">
-        <h2 className="text-2xl font-bold text-rose-100 mb-4">Seasons</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-rose-100 mb-4">Seasons</h2>
+          {isAdmin && <EditButton type="addSeason" />}
+        </div>
         <ul className="space-y-4">
           {seasonList && seasonList.length > 0 ? (
             seasonList.map((season) => (
@@ -57,7 +64,7 @@ const SeasonListComponent = ({ seasonList }: SeasonListProps) => {
                       </p>
                     </div>
                     {/* 🔧 Add Edit Button for this season */}
-                    <EditButton type="season" season={season} />
+                    {isAdmin && <EditButton type="season" season={season} />}
                   </div>
                 </div>
               </li>

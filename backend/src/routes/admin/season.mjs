@@ -8,13 +8,11 @@ const router = Router();
 
 
 // CREATE
-router.post("/add/:animeId", async (req, res) => {
+router.post("/:animeName", async (req, res) => {
 
-  const animeId = parseInt(req.params.animeId);
-  if (isNaN(animeId)) return res.status(400).send("Invalid anime id in request");
+  const animeName = req.params.animeName;
 
   const {
-    seasonNumber,
     isFinished,
     startedAiring,
     finishedAiring,
@@ -23,18 +21,21 @@ router.post("/add/:animeId", async (req, res) => {
   try {
     const anime = await prisma.anime.findUnique({
       where: {
-        id: animeId
+        title: animeName
+      },
+      include: {
+        seasons: true
       }
     });
 
     if (!anime) {
-      return res.status(404).json({ error: `No anime found with id: ${animeId}` });
+      return res.status(404).json({ error: `No anime found with name: ${animeName}` });
     }
 
     const season = await prisma.season.create({
       data: {
-        animeId: animeId,
-        seasonNumber: seasonNumber,
+        animeId: anime.id,
+        seasonNumber: anime.seasons.length + 1,
         isFinished: isFinished,
 
         startedAiring: startedAiring ? new Date(startedAiring) : null,
@@ -51,7 +52,7 @@ router.post("/add/:animeId", async (req, res) => {
 
 
 // DELETE
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const seasonId = parseInt(req.params.id);
   if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
 
@@ -70,47 +71,7 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-
-// UPDATE
-router.put("/update/:id", async (req, res) => {
-  const seasonId = parseInt(req.params.id);
-  if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
-
-  const {
-    animeId,
-    seasonNumber,
-    isFinished,
-    startedAiring,
-    finishedAiring,
-  } = req.body;
-
-  try {
-    const updated = await prisma.season.update({
-      where: { id: seasonId },
-      data: {
-        animeId: animeId,
-        seasonNumber: seasonNumber,
-        isFinished: isFinished,
-
-        startedAiring: startedAiring ? new Date(startedAiring) : null,
-        finishedAiring: finishedAiring ? new Date(finishedAiring) : null,
-      },
-    });
-
-    return res.status(200).json(updated);
-  } catch (error) {
-    console.error("Error updating season:", error);
-    if (error.code === "P2025") {
-      return res.status(404).json({ error: "Season not found." });
-    }
-    return res.status(500).json({ error: error.message });
-    // P2003 -> foreign key constriant violation -> animeId DNE in anime table
-    // P2025 -> no record found for update -> seasonId DNE in season table
-  }
-});
-
-
-router.patch("/update/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   const seasonId = parseInt(req.params.id);
   if (isNaN(seasonId)) return res.status(400).send("Invalid season id in request");
 

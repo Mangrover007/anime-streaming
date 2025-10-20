@@ -15,6 +15,9 @@ router.get("/:seasonId/all", async (req, res) => {
       where: {
         seasonId: seasonId
       },
+      orderBy: {
+        episodeNumber: 'asc',
+      },
     })
     res.status(200).json(findEpisodes);
   } catch (error) {

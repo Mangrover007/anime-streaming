@@ -17,6 +17,9 @@ router.get("/:title", async (req, res) => {
     const findSeasons = await prisma.season.findMany({
       where: {
         animeId: findAnime.id
+      },
+      orderBy: {
+        seasonNumber: 'asc',  // or 'desc' if you want descending order
       }
     });
     console.log(findSeasons);

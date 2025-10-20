@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { EpisodeType } from "../../types";
 import { COMMON_URL } from "../../api";
 import { useSearchParams } from "react-router-dom";
 import EditButton from "./EditButton";
+import { PORTAL } from "../../App";
 
 const Episode = () => {
 
@@ -10,8 +11,14 @@ const Episode = () => {
   const [episodeList, setEpisodeList] = useState<EpisodeType[]>([]);
   const [episode, setEpisode] = useState<EpisodeType | undefined>(undefined);
 
-  async function handleChangeEpisode() {
+  const { isAdmin } = useContext(PORTAL);
 
+  async function handleChangeEpisode(episode: EpisodeType) {
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("eid", String(episode.id));
+      return newParams;
+    })
   }
 
   // get new episode list on season change
@@ -43,14 +50,19 @@ const Episode = () => {
   return <>
     {/* Sidebar - Episode List */}
     <aside className="bg-[#2c293c] border-r border-gray-700 p-4 overflow-y-auto" style={{ gridArea: "box-1" }}>
-      <h2 className="text-xl font-semibold text-rose-200 mb-4">Episodes</h2>
+
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-rose-200 mb-4">Episodes</h2>
+        {isAdmin && <EditButton type="addEpisode" />}
+      </div>
+
       <ul className="space-y-3">
         {episodeList.length > 0 ? (
-          episodeList.map((ep: EpisodeType) => (
+          episodeList.map((ep) => (
             <li
               key={ep.id}
               className="bg-gray-700 hover:bg-gray-600 transition rounded-lg p-3 cursor-pointer"
-              onClick={handleChangeEpisode}
+              onClick={() => handleChangeEpisode(ep)}
             >
               <div className="flex justify-between items-center">
                 <span className="text-rose-100 font-medium">
@@ -62,7 +74,9 @@ const Episode = () => {
               </div>
               <div className="flex justify-between" onClick={() => console.log("this should not be happening lol")}>
                 <p className="text-sm text-gray-300 truncate">{ep.title}</p>
-                <EditButton type="episode" episode={episode} />
+                {
+                  isAdmin && <EditButton type="episode" episode={episode} />
+                }
               </div>
             </li>
           ))

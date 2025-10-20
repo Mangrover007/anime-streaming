@@ -198,13 +198,15 @@ const AnimeDetails = () => {
 
           {/* Button Group */}
           <div className="flex items-center gap-4">
-            <button
-              onClick={handleAdminDeleteAnime}
-              className={`px-4 py-2 rounded-full bg-rose-600 text-white font-semibold hover:bg-rose-500 transition ${isFavorite ? "bg-rose-400" : ""
-                }`}
-            >
-              DELETE ANIME
-            </button>
+            {
+              isAdmin && <button
+                onClick={handleAdminDeleteAnime}
+                className={`px-4 py-2 rounded-full bg-rose-600 text-white font-semibold hover:bg-rose-500 transition ${isFavorite ? "bg-rose-400" : ""
+                  }`}
+              >
+                DELETE ANIME
+              </button>
+            }
 
             <button
               onClick={handleFavorite}

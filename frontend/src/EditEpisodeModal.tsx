@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ReactDOM from "react-dom";
-import { COMMON_URL } from "./api";
+import { ADMIN_URL } from "./api";
 import type { EpisodeType } from "./types";
 import Button from "./components/Button";
 
@@ -19,12 +19,12 @@ const EditEpisodeModal = ({ episode, onClose }: EditEpisodeModalProps) => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      await COMMON_URL.patch(`/episode/${episode.id}`, {
+      await ADMIN_URL.patch(`/episode/${episode.id}`, {
         title,
         episodeNumber,
         length: lengthMinutes * 60000,
       });
-      onClose();
+      window.location.reload();
     } catch (err) {
       console.error("Error updating episode:", err);
     } finally {
@@ -33,7 +33,7 @@ const EditEpisodeModal = ({ episode, onClose }: EditEpisodeModalProps) => {
   }
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50" onClick={e => e.stopPropagation()}>
       <div className="bg-[#1c1a2e]/90 border border-[#2c2844] rounded-xl shadow-2xl p-8 w-96 relative overflow-hidden">
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#1e1b2e]/90 via-[#2c293c]/80 to-[#1c1a2e]/90 pointer-events-none rounded-xl border border-[#2c2844]" />
@@ -85,10 +85,7 @@ const EditEpisodeModal = ({ episode, onClose }: EditEpisodeModalProps) => {
           <div className="flex justify-end space-x-4 pt-6">
             <button
               type="button"
-              onClick={e => {
-                e.stopPropagation();
-                onClose()
-              }}
+              onClick={onClose}
               className="px-5 py-2 rounded-full border-2 border-gray-400 bg-transparent text-gray-400 hover:bg-gray-200 hover:text-gray-900 transition-all duration-200"
             >
               Cancel
@@ -97,7 +94,6 @@ const EditEpisodeModal = ({ episode, onClose }: EditEpisodeModalProps) => {
             <Button
               innerText={isSaving ? "Saving..." : "Save"}
               onClick={e => {
-                e.stopPropagation();
                 handleSubmit(e);
                 onClose();
               }}

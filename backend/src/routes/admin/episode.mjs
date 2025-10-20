@@ -13,22 +13,31 @@ const router = Router();
  * Required in body:
  * - seasonId, title, episodeNumber, length, airedAt, subUrl
  */
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   const {
     seasonId,
     title,
-    episodeNumber,
     length,
     airedAt,
     subUrl,
   } = req.body;
 
   try {
+    const seasonExist = await prisma.season.findUnique({
+      where: {
+        id: parseInt(seasonId)
+      },
+      include: {
+        episodes: true
+      }
+    })
+
+    if (!seasonExist) return res.status(404).send(`season not found with id - ${seasonId}`);
     const episode = await prisma.episode.create({
       data: {
-        seasonId,
+        seasonId: parseInt(seasonId),
         title,
-        episodeNumber,
+        episodeNumber: seasonExist.episodes.length + 1,
         length,
         airedAt: new Date(airedAt),
         subUrl,
@@ -43,7 +52,7 @@ router.post("/add", async (req, res) => {
 });
 
 
-router.patch("/update/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   const episodeId = parseInt(req.params.id);
   const {
     title,
@@ -77,7 +86,7 @@ router.patch("/update/:id", async (req, res) => {
 });
 
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const episodeId = parseInt(req.params.id);
   if (isNaN(episodeId)) return res.status(400).send("Invalid episode id");
 
