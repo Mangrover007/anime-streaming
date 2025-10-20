@@ -1,20 +1,7 @@
 import { useEffect, useState } from "react";
-import { COMMON_URL } from "../api";
-import AnimeCard from "./AnimeCard";
-
-export type Anime = {
-  id: number;
-  title: string;
-  description: string;
-  author: string;
-  rating: number;
-  status: string;
-  thumbnailUrl: string;
-  startedAiring: string;
-  finishedAiring: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { COMMON_URL } from "../../api";
+import AnimeCard from "../anime/AnimeCard";
+import type { Anime } from "../../types";
 
 const Home = () => {
   const [animeList, setAnimeList] = useState<Anime[]>([]);
@@ -23,6 +10,7 @@ const Home = () => {
     try {
       const res = await COMMON_URL.get("/anime/all");
       setAnimeList(res.data); // assuming res.data is Anime[]
+      console.log(res.data[0])
     } catch (err) {
       console.error("Failed to fetch anime list:", err);
     }

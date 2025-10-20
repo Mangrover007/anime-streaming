@@ -93,7 +93,7 @@ router.put("/update/:id", async (req, res) => {
 /**
  * DELETE Anime by ID
  */
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const animeId = parseInt(req.params.id);
 
   if (isNaN(animeId)) return res.status(400).json({ error: "Invalid anime ID." });
@@ -112,6 +112,7 @@ router.delete("/delete/:id", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
+
 
 /**
  * PATCH Anime by ID (Partial Update)

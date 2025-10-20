@@ -14,3 +14,8 @@ export const PROT_URL = axios.create({
     baseURL: "http://localhost:3000/prot",
     withCredentials: true,
 });
+
+export const ADMIN_URL = axios.create({
+    baseURL: "http://localhost:3000/admin",
+    withCredentials: true,
+});

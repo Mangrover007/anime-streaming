@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
           include: {
             user: {
               select: {
+                id: true,
                 username: true,
                 profilePicture: true
               }
@@ -38,6 +39,7 @@ router.get("/", async (req, res) => {
         content: comment.content,
         createdAt: comment.createdAt,
         user: {
+          id: comment.user.id,
           username: comment.user.username,
           profilePicture: comment.user.profilePicture
         }

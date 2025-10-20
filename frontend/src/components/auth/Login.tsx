@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { AUTH_URL } from "../api";
-import { PORTAL } from "../App";
+import { AUTH_URL } from "../../api";
+import { PORTAL } from "../../App";
 
 const LoginPage = () => {
   const { setUser } = useContext(PORTAL);

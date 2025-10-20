@@ -11,6 +11,9 @@ const router = Router();
 
 router.use(verifyToken);
 router.use(isAdmin);
+router.get("/", (req, res) => {
+    res.sendStatus(200);
+})
 router.use("/anime", animeRoute);
 router.use("/season", seasonRoute);
 router.use("/episode", episodeRoute);

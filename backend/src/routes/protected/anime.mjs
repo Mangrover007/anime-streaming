@@ -84,5 +84,4 @@ router.post("/remove-fav", async (req, res) => {
 });
 
 
-
 export { router as userAnimeRoute };

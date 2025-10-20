@@ -1,21 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import { PORTAL } from "../App";
-import { COMMON_URL, PROT_URL } from "../api";
-import Button from "./Button";
-import type { CommentType, Episode } from "./Watch";
+import { PORTAL } from "../../App";
+import { COMMON_URL, PROT_URL } from "../../api";
+import Button from "../Button";
+import type { CommentType } from "../../types";
+import CommentCard from "./CommentCard";
+import { useSearchParams } from "react-router-dom";
 
-type CommentProps = {
-  episode: Episode | undefined
-}
 
-const Comment = ({ episode }: CommentProps) => {
+const Comment = () => {
 
   const { user } = useContext(PORTAL);
   const [writeComment, setWriteComment] = useState<string>("");
   const [commentList, setCommentList] = useState<CommentType[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
 
   async function handleSendComment() {
-    const res = await PROT_URL.post(`/comment?ep=${episode?.id}`, {
+    const res = await PROT_URL.post(`/comment?ep=${searchParams.get("eid")}`, {
       content: writeComment
     });
     if (res.status === 200) {
@@ -27,14 +28,14 @@ const Comment = ({ episode }: CommentProps) => {
 
   useEffect(() => {
     async function getComments() {
-      const res = await COMMON_URL.get(`/comment?id=${episode?.id}`);
+      const res = await COMMON_URL.get(`/comment?id=${searchParams.get("eid")}`);
       console.log("commentador", res.data.data);
       setCommentList(res.data.data);
     }
-    if (episode?.id) {
+    if (searchParams.get("eid")) {
       getComments();
     }
-  }, [episode])
+  }, [searchParams.get("eid")]);
 
   return <>
 
@@ -62,40 +63,17 @@ const Comment = ({ episode }: CommentProps) => {
       }
 
       {/* Comment List */}
-      <div className="space-y-4">
+      <div className="gap-4 flex flex-col-reverse">
         {commentList.length > 0 ? (
-          commentList.map((comment, index) => (
-            <div
-              key={index}
-              className="bg-[#2d2a3a]/80 backdrop-blur-sm border border-gray-700 rounded-lg p-4 shadow-sm"
-            >
-              <div className="grid grid-cols-[48px_1fr] gap-4">
-                {/* Profile Picture */}
-                <img
-                  src={comment.user.profilePicture || "/vite.svg"}
-                  alt={`${comment.user.username}'s profile`}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-
-                {/* Username, Date & Content */}
-                <div className="grid grid-rows-[auto_1fr] gap-1">
-                  {/* Username & Date */}
-                  <div className="flex items-center justify-between text-sm text-gray-400">
-                    <span className="font-semibold text-rose-200">{comment.user.username}</span>
-                    <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                  </div>
-
-                  {/* Comment Content */}
-                  <p className="text-sm text-gray-300">{comment.content}</p>
-                </div>
-              </div>
-            </div>
-          ))
+          commentList.map((comment) => {
+            return (
+              <CommentCard comment={comment} setCommentList={setCommentList} />
+            );
+          })
         ) : (
           <p className="text-gray-500 text-sm">No comments yet.</p>
         )}
       </div>
-
 
 
     </div>

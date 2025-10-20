@@ -1,37 +1,27 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import Landing from "./components/Landing";
-import Home, { type Anime } from "./components/Home";
+import Landing from "./components/home/Landing";
+import Home from "./components/home/Home";
 import Layout from "./layouts/Layout";
-import Watch from "./components/Watch";
-import AnimeDetails, { type Season } from "./components/AnimeDetails";
-import { createContext, use, useEffect, useRef, useState } from "react";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import { AUTH_URL } from "./api";
+import Watch from "./components/main/Watch";
+import AnimeDetails from "./components/anime/AnimeDetails";
+import { createContext, useEffect, useRef, useState } from "react";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import { ADMIN_URL, AUTH_URL } from "./api";
 import Settings from "./components/Settings";
-
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-  profilePicture: string | null;
-  roleId: number;
-  createdAt: string;  // ISO date string
-  updatedAt: string;  // ISO date string
-  favoriteAnimes: Anime[]
-};
+import type { Season, User } from "./types";
 
 
-type SeasonContextType = {
+type PORTAL_CONTEXT = {
   seasonList: React.RefObject<Season[]>;
   user: User | null,
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
   userRef: React.RefObject<User | null>,
+  isAdmin: boolean
 };
 
-export const PORTAL = createContext<SeasonContextType>({
+export const PORTAL = createContext<PORTAL_CONTEXT>({
   seasonList: {
     current: []
   },
@@ -39,24 +29,41 @@ export const PORTAL = createContext<SeasonContextType>({
   setUser: () => {},
   userRef: {
     current: null
-  }
+  },
+  isAdmin: false
 });
 
 const App = () => {
 
   const seasonListRef = useRef<Season[]>([]);
   const userRef = useRef<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
-  const contextValue: SeasonContextType = {
+  const contextValue: PORTAL_CONTEXT = {
     seasonList: seasonListRef,
     user: user,
     setUser: setUser,
-    userRef: userRef
+    userRef: userRef,
+    isAdmin: isAdmin
   }
 
   useEffect(() => {
     userRef.current = user
+    async function amIAdmin() {
+      try {
+        const res = await ADMIN_URL.get("/");
+        if (res.status === 200) {
+          setIsAdmin(true);
+          console.log("is admin")
+        }
+      }
+      catch (err) {
+        setIsAdmin(false);
+        console.log(err);
+      }
+    }
+    amIAdmin();
   }, [user]);
 
   useEffect(() => {

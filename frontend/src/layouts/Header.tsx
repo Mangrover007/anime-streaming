@@ -1,10 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import Button from "./Button";
+import Button from "../components/Button";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PORTAL } from "../App";
 import { AUTH_URL } from "../api";
 import axios from "axios";
-import type { Anime } from "./Home";
+import type { Anime } from "../types";
 
 const Header = () => {
 
