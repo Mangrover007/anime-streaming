@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import type { EpisodeType } from "../../types";
 import { COMMON_URL } from "../../api";
 import { useSearchParams } from "react-router-dom";
-import EditButton from "./EditButton";
+import EditButton from "../EditButton";
 import { PORTAL } from "../../App";
 
 const Episode = () => {

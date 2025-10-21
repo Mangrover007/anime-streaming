@@ -1,8 +1,8 @@
 import { useState } from "react";
 import ReactDOM from "react-dom";
-import { ADMIN_URL } from "./api";
-import type { EpisodeType } from "./types";
-import Button from "./components/Button";
+import type { EpisodeType } from "../types";
+import { ADMIN_URL } from "../api";
+import Button from "../components/Button";
 
 type EditEpisodeModalProps = {
   episode: EpisodeType;

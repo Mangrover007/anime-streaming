@@ -3,13 +3,13 @@ import "./App.css";
 import Landing from "./components/home/Landing";
 import Home from "./components/home/Home";
 import Layout from "./layouts/Layout";
-import Watch from "./components/main/Watch";
+import Watch from "./components/video-player/Watch";
 import AnimeDetails from "./components/anime/AnimeDetails";
 import { createContext, useEffect, useRef, useState } from "react";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import { ADMIN_URL, AUTH_URL } from "./api";
-import Settings from "./components/Settings";
+import Settings from "./components/user-profile/Settings";
 import type { Season, User } from "./types";
 
 

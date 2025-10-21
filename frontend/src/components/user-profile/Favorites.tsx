@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import AnimeCard from "./anime/AnimeCard";
+import AnimeCard from "../anime/AnimeCard";
 
-import { PORTAL } from "../App";
-import { PROT_URL } from "../api";
-import type { Anime } from "../types";
+import { PORTAL } from "../../App";
+import { PROT_URL } from "../../api";
+import type { Anime } from "../../types";
 
 const Favorites = () => {
 

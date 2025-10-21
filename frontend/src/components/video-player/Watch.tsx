@@ -3,12 +3,12 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { COMMON_URL } from "../../api";
 import "./Temp.css";
 
-import Comment from "../comment/Comment";
+import Comment from "./Comment";
 import type { Season } from "../../types";
 
 import Episode from "./Episode";
 import SeasonListComponent from "./SeasonListComponent";
-import Ringo from "./Ringo";
+import Ringo from "./VideoPlayer";
 
 const Watch = () => {
 

@@ -10,6 +10,10 @@ export type Anime = {
   finishedAiring: string;
   createdAt: string;
   updatedAt: string;
+  genres: {
+    id: number;
+    name: string;
+  }[];
 };
 
 export type User = {

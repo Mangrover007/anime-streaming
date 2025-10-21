@@ -349,6 +349,14 @@ const AnimeDetails = () => {
                   />
                 </div>
               </div>
+
+              <div className="flex gap-4">
+              Tags: {anime.genres.map(genre => {
+                return <span className="">
+                  {genre.name} <hr className="" />
+                </span>
+              })}
+              </div>
             </div>
           </div>
 

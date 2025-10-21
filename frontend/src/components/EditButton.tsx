@@ -1,9 +1,10 @@
 import { useState } from "react"
-import EditEpisodeModal from "../../EditEpisodeModal";
-import type { EpisodeType, Season } from "../../types";
-import EditSeasonModal from "../../EditSeasonModal";
-import AdminAddEpisode from "../../AdminAddEpisode";
-import AdminAddSeason from "../../AdminAddSeason";
+import type { EpisodeType, Season } from "../types";
+import EditEpisodeModal from "./modals/EditEpisodeModal";
+import EditSeasonModal from "./modals/EditSeasonModal";
+import AdminAddEpisode from "./modals/AdminAddEpisode";
+import AdminAddSeason from "./modals/AdminAddSeason";
+
 
 type EditButtonProps = {
   type: "episode" | "season" | "addEpisode" | "addSeason",
