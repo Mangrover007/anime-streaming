@@ -85,8 +85,10 @@ router.get("/:name",
     const title = req.params.name;
     const validation = getAnimeByNameSchema.safeParse({ title });
     if (validation.success) {
-      req.validated
+      req.validated = validation.data;
+      return next();
     }
+    return res.status(400).send("Bad request");
   }, async (req, res) => {
     try {
       const title = req.validated.title;

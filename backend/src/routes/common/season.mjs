@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const router = Router();
 
 router.get("/:title",
-  function (req, re, next) {
+  function (req, res, next) {
     const title = req.params.title;
     const validation = getSeasonSchema.safeParse({ title });
     if (validation.success) {
