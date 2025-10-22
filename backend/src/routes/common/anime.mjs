@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import { getAnimeByNameSchema, getAnimeSchema } from "../../schemas/common/anime.mjs";
 const prisma = new PrismaClient();
 const PAGE_SIZE = 5;
 
@@ -30,65 +31,83 @@ router.post("/all/genre", async (req, res) => {
   }
 });
 
-router.get("/all", async (req, res) => {
-  try {
-    let pageNumber = parseInt(req.query.p);
-    let query = req.query.q;
-    if (!query) query="";
-    if (isNaN(pageNumber) || pageNumber < 1) pageNumber=1;
+router.get("/all",
+  function (req, res, next) {
+    const validation = getAnimeSchema.safeParse(req.query);
+    if (validation.success) {
+      req.validated = validation.data;
+      return next();
+    }
+    return res.status(400).send("Bad request");
+  }, async (req, res) => {
+    try {
+      const { pageNumber, query } = req.validated;
 
-    const findCount = await prisma.anime.count({
-      where: {
-        title: {
-          startsWith: query,
-          mode: "insensitive",
-        }
-      },
-    });
-    let maxPage = Math.ceil(findCount/PAGE_SIZE);
-    if (maxPage === 0) maxPage=1;
-    if (pageNumber > maxPage) pageNumber=maxPage;
-    
-    const findAllAnime = await prisma.anime.findMany({
-      skip: (pageNumber-1)*PAGE_SIZE,
-      take: PAGE_SIZE,
-      where: {
-        title: {
-          startsWith: query,
-          mode: "insensitive",
-        }
-      },
-      include: {
-        genres: true,
-      }
-    });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return res.status(200).send(findAllAnime);
-  } catch (error) {
-    console.log("anime /all/:pageNumber error", error);
-    res.status(500).send("caught error in anime /all/:pageNumber")
-  }
-});
+      const findCount = await prisma.anime.count({
+        where: {
+          title: {
+            startsWith: query,
+            mode: "insensitive",
+          }
+        },
+      });
 
-router.get("/:name", async (req, res) => {
-  try {
+      const maxPage = Math.ceil(findCount / PAGE_SIZE);
+      if (maxPage === 0) maxPage = 1;
+      if (pageNumber > maxPage) pageNumber = maxPage;
+
+      const findAllAnime = await prisma.anime.findMany({
+        skip: (pageNumber - 1) * PAGE_SIZE,
+        take: PAGE_SIZE,
+        where: {
+          title: {
+            startsWith: query,
+            mode: "insensitive",
+          }
+        },
+        include: {
+          genres: true,
+        }
+      });
+
+      // this for testing only
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      return res.status(200).send(findAllAnime);
+    } catch (error) {
+      console.log("anime /all/:pageNumber error", error);
+      res.status(500).send("caught error in anime /all/:pageNumber")
+    }
+  });
+
+router.get("/:name",
+  function (req, res, next) {
     const title = req.params.name;
-    if (!title) return res.status(400).send("Invalid anime name");
-    const findAnime = await prisma.anime.findUnique({
-      where: {
-        title: title
-      },
-      include: {
-        genres: true,
-      }
-    });
-    if (!findAnime) return res.status(404).send(`No anime found with name - ${title}`);
-    return res.status(200).send(findAnime);
-  } catch (error) {
-    console.log("anime /:name error", error);
-    res.status(500).send("caught error in anime /:name");
-  }
-});
+    const validation = getAnimeByNameSchema.safeParse({ title });
+    if (validation.success) {
+      req.validated
+    }
+  }, async (req, res) => {
+    try {
+      const title = req.validated.title;
+
+      const findAnime = await prisma.anime.findUnique({
+        where: {
+          title: title
+        },
+        include: {
+          genres: true,
+        }
+      });
+
+      if (!findAnime) return res.status(404).send(`No anime found with name - ${title}`);
+
+      return res.status(200).send(findAnime);
+    } catch (error) {
+      console.log("anime /:name error", error);
+      res.status(500).send("caught error in anime /:name");
+    }
+  });
 
 // router.get("/:id", async (req, res) => {
 //   try {

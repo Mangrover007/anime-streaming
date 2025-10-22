@@ -12,7 +12,7 @@ const Comment = () => {
   const { user } = useContext(PORTAL);
   const [writeComment, setWriteComment] = useState<string>("");
   const [commentList, setCommentList] = useState<CommentType[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
 
   async function handleSendComment() {
@@ -20,7 +20,7 @@ const Comment = () => {
       content: writeComment
     });
     if (res.status === 200) {
-      setCommentList(prev => [...prev]); // TODO: make backend api response consistent so i can update this list here
+      setCommentList(prev => [...prev, res.data.data as CommentType]);
       setWriteComment("");
     }
     console.log(res);

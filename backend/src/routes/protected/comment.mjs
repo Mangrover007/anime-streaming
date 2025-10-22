@@ -1,91 +1,118 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import { protectedCommentDeleteSchema, protectedCommentPatchSchema, protectedCommentPostSchema } from "../../schemas/protected/comment.mjs";
+
 const prisma = new PrismaClient();
 
 // TODO: Error Handling
-// TODO: Payload Validation
 
 const router = Router();
 
-router.post("/", async (req, res) => {
-  try {
-    const episodeId = parseInt(req.query.ep);
-    if (isNaN(episodeId)) return res.status(400).send("Inavlid episode id");
-
+router.post("/",
+  function (req, res, next) {
+    const episodeId = req.query.ep;
     const {
       content
     } = req.body;
+    const validation = protectedCommentPostSchema.safeParse({ episodeId, content });
+    if (validation.success) {
+      req.validated = validation.data;
+      return next();
+    }
+    return res.status(400).send("Bad request");
+  }, async function (req, res) {
+    try {
+      const { episodeId, content } = req.validated;
 
-    const createComment = await prisma.comment.create({
-      data: {
-        content: content,
-        episodeId: episodeId,
-        userId: req.user.id,
-      },
-      include: {
-        episode: true,
-        user: true,
-      }
-    });
+      const createComment = await prisma.comment.create({
+        data: {
+          content: content,
+          episodeId: episodeId,
+          userId: req.user.id,
+        },
+        include: {
+          episode: true,
+          user: true,
+        }
+      });
 
-    return res.json({
-      content: createComment.content,
-      username: req.user.username,
-      createdAt: createComment.createdAt,
-    });
-  } catch (error) {
-    console.log("caught error in /comment POST", error);
-    return res.status(500).send("caught error in /comment POST");
-  }
-});
+      return res.json({
+        data: {
+          id: createComment.id,
+          content: createComment.content,
+          createdAt: createComment.createdAt,
+          user: {
+            id: createComment.user.id,
+            username: createComment.user.username,
+            profilePicture: createComment.user.profilePicture
+          }
+        },
+        metadata: ""
+      });
+    } catch (error) {
+      console.log("caught error in /comment POST", error);
+      return res.status(500).send("caught error in /comment POST");
+    }
+  });
 
-router.patch("/", async (req, res) => {
-  try {
-    const commentId = parseInt(req.query.id);
-    const userId = parseInt(req.user.id);
+router.patch("/",
+  function (req, res, next) {
+    const commentId = req.query.id;
+    const userId = req.user.id;
     const { content } = req.body;
+    const validation = protectedCommentPatchSchema.safeParse({ commentId, userId, content });
+    if (validation.success) {
+      req.validated = validation.data;
+      return next();
+    }
+    return res.status(400).send("Bad request");
+  }, async function (req, res) {
+    try {
+      const { commentId, userId, content } = req.validated;
 
-    if (isNaN(commentId)) return res.status(400).send("Invalid comment id");
-    if (isNaN(userId)) return res.status(400).send("Invalid user id");
-    if (!content || content.length === 0) return res.status(400).send("content is required and not empty");
+      const updateComment = await prisma.comment.update({
+        where: {
+          id: commentId,
+          userId: userId
+        },
+        data: {
+          content: content,
+        }
+      });
 
-    const updateComment = await prisma.comment.update({
-      where: {
-        id: commentId,
-        userId: userId
-      },
-      data: {
-        content: content,
-      }
-    });
+      return res.json(updateComment);
+    } catch (error) {
+      console.log("error in /comment PATCH", error);
+      return res.status(500).send("error in /comment PATCH - either internal server error, or not authorized, or comment with given id not found");
+    }
+  });
 
-    return res.json(updateComment);
-  } catch (error) {
-    console.log("error in /comment PATCH", error);
-    return res.status(500).send("error in /comment PATCH - either internal server error, or not authorized, or comment with given id not found");
-  }
-});
+router.delete("/",
+  function (req, res, next) {
+    const commentId = req.query.id;
+    const userId = req.user.id;
+    const validation = protectedCommentDeleteSchema.safeParse({ commentId, userId });
+    if (validation.success) {
+      req.validated = validation.data;
+      return next();
+    }
+    return res.status(400).send("Bad request");
+  }, async function (req, res) {
+    try {
+      const { commentId, userId } = req.validated;
 
-router.delete("/", async (req, res) => {
-  try {
-    const commentId = parseInt(req.query.id);
-    const userId = parseInt(req.user.id);
+      const deleteComment = await prisma.comment.delete({
+        where: {
+          id: commentId,
+          userId: userId
+        }
+      });
 
-    if (isNaN(commentId)) return res.status(400).send("Invalid comment id");
-    if (isNaN(userId)) return res.status(400).send("Invalid user id");
-
-    const deleteComment = await prisma.comment.delete({
-      where: {
-        id: commentId,
-        userId: userId
-      }
-    });
-
-    return res.json(deleteComment);
-  } catch (error) {
-    console.log("error in /comment DELETE", error);
-    return res.status(500).send("cannot delete comment");
-  }
-});
+      return res.json(deleteComment);
+    } catch (error) {
+      console.log("error in /comment DELETE", error);
+      return res.status(500).send("cannot delete comment");
+    }
+  });
 
 export { router as userCommentRoute };

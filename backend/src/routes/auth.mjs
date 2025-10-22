@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
 import { validatePayload } from "../middlewares/validate.mjs";
-import { loginSchema, registerSchema } from "../schemas/validators.mjs";
+import { loginSchema, registerSchema } from "../schemas/auth.mjs";
 import { PrismaClient } from "@prisma/client";
 import { userRole } from "../utils/userRole.mjs";
 
@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 const router = Router();
 
-// ✅ LOGIN
+
 router.post("/login", validatePayload(loginSchema), async (req, res) => {
   const { email, password } = req.body;
 
@@ -66,8 +66,7 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
 });
 
 
-// ✅ REGISTER
-router.post("/register", validatePayload(registerSchema) ,async (req, res) => {
+router.post("/register", validatePayload(registerSchema), async (req, res) => {
   const { username, email, password } = req.body;
 
   const existingUser = await prisma.user.findUnique({
@@ -120,6 +119,7 @@ router.post("/register", validatePayload(registerSchema) ,async (req, res) => {
   res.status(201).send(newUser);
 });
 
+
 router.get("/who", async (req, res) => {
   const { token } = req.cookies;
   if (!token) return res.status(400).send("no token");
@@ -136,6 +136,7 @@ router.get("/who", async (req, res) => {
   if (!findUser) return res.status(404).send("you do not exist");
   return res.send(findUser);
 });
+
 
 router.get("/logout", verifyToken, async (req, res) => {
   res.clearCookie("token", {
