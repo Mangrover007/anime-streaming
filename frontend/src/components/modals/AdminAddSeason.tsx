@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ADMIN_URL } from "../api";
-import Button from "../components/Button";
+
 import { useParams } from "react-router-dom";
+import { ADMIN_URL } from "../../api";
+import Button from "../Button";
 
 type AdminAddSeasonProps = {
   onClose: () => void;

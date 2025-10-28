@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PORTAL } from "../App";
 import Favorites from "./Favorites";
+import { PORTAL } from "../../App";
 
 const Settings = () => {
   const { user } = useContext(PORTAL);

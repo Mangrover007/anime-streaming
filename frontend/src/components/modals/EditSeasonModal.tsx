@@ -1,8 +1,9 @@
 import { useState } from "react";
 import ReactDOM from "react-dom";
-import { ADMIN_URL } from "../api";
-import type { Season } from "../types";
-import Button from "../components/Button";
+import type { Season } from "../../types";
+import { ADMIN_URL } from "../../api";
+import Button from "../Button";
+
 
 
 type EditSeasonModalProps = {

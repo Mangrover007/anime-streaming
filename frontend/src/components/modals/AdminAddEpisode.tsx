@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ADMIN_URL } from "../api";
-import Button from "../components/Button";
 import { useSearchParams } from "react-router-dom";
+import { ADMIN_URL } from "../../api";
+import Button from "../Button";
 
 type AdminAddEpisodeProps = {
   onClose: () => void,
