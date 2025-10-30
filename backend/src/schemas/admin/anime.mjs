@@ -25,7 +25,7 @@ export const adminAnimePatchSchema = z.object({
     rating: z.coerce.number().gt(0).optional(),
     author: z.string().nonempty().optional(),
     startedAiring: z.coerce.date().optional(),
-    finishedAiring: z.coerce.date().nullable().optional(),
+    finishedAiring: z.preprocess(data => { return data === "" ? null : new Date(data) }, z.date().nullable().optional()),
     status: z.enum(["HIATUS", "AIRING", "FINISHED", "UPCOMING"]).optional(),
     thumbnailUrl: z.url().optional(),
 });

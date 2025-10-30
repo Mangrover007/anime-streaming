@@ -11,6 +11,8 @@ import Signup from "./components/auth/Signup";
 import { ADMIN_URL, AUTH_URL } from "./api";
 import Settings from "./components/user-profile/Settings";
 import type { Season, User } from "./types";
+import Popular from "./components/home/Popular";
+import Latest from "./components/home/Latest";
 
 
 type PORTAL_CONTEXT = {
@@ -55,7 +57,7 @@ const App = () => {
         const res = await ADMIN_URL.get("/");
         if (res.status === 200) {
           setIsAdmin(true);
-          console.log("is admin")
+          // console.log("is admin")
         }
       }
       catch (err) {
@@ -71,7 +73,6 @@ const App = () => {
       const res = await AUTH_URL.get("/who");
       if (res.status === 200) {
         setUser(res.data);
-        console.log(res.data);
       }
     }
     whoAmI();
@@ -118,6 +119,20 @@ const App = () => {
     {
       path: "/settings",
       element: <Settings />
+    },
+    {
+      path: "/misc",
+      element: <Layout />,
+      children: [
+        {
+          path: "trending",
+          element: <Popular />
+        },
+        {
+          path: "latest",
+          element: <Latest />
+        }
+      ]
     }
   ]);
 

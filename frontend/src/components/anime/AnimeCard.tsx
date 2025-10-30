@@ -9,7 +9,7 @@ const AnimeCard = ({ imgUrl, title }: AnimeCardProps) => {
   return (
     <Link
       to={`/${title}`}
-      className="w-full max-w-xs bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-100 block"
+      className="w-[280px] bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-100 block"
     >
       <img
         src={imgUrl}

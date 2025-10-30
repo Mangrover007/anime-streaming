@@ -21,9 +21,9 @@ const AnimeDetails = () => {
     ? "border-2 border-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition duration-200"
     : "";
 
-  useEffect(() => {
-    console.log(isAdmin, "is admin")
-  }, []);
+  // useEffect(() => {
+  //   console.log(isAdmin, "is admin")
+  // }, []);
 
   useEffect(() => {
     if (seasons.length !== 0) {
@@ -43,18 +43,18 @@ const AnimeDetails = () => {
   }
 
   function isCurrentAnimeFavorite() {
-    if (!userRef || !userRef.current?.favoriteAnimes) return false;
-    const findIndex = userRef.current?.favoriteAnimes?.findIndex(favAnime => {
+    if (!user) return false;
+    const findIndex = user.favoriteAnimes.findIndex(favAnime => {
       return favAnime.id === anime?.id
     });
-    console.log(findIndex !== -1, "THIS IS WHAT WE CALL SHIT", userRef.current?.favoriteAnimes);
     return findIndex !== -1
   }
 
   useEffect(() => {
     if (anime) {
       getSeasons();
-      if (isCurrentAnimeFavorite()) {
+      const resultIsCurrentAnimeFavorite = isCurrentAnimeFavorite();
+      if (resultIsCurrentAnimeFavorite) {
         setIsFavorite(true);
       }
       else {
@@ -68,7 +68,10 @@ const AnimeDetails = () => {
       try {
         setLoading(true);
         const response = await COMMON_URL.get(`/anime/${animeName}`);
-        setAnime(response.data);
+        const data: Anime = response.data;
+        setAnime({
+          ...data,
+        });
       } catch (err) {
         setError("Failed to fetch anime details.");
         console.error(err);
@@ -79,7 +82,7 @@ const AnimeDetails = () => {
 
     if (animeName) {
       fetchAnimeDetails();
-      console.log(animeName)
+      // console.log(animeName)
     }
   }, [animeName]);
 
@@ -94,6 +97,7 @@ const AnimeDetails = () => {
         if (anime && userRef.current) {
           // lil cp :)
           setIsFavorite(true);
+          console.log("on handle favorite - true");
           userRef.current?.favoriteAnimes.push(anime);
           const addedAnimeSet = new Set<number>();
           userRef.current.favoriteAnimes = userRef.current?.favoriteAnimes.filter(favAnime => {
@@ -114,6 +118,7 @@ const AnimeDetails = () => {
       if (res.status === 200) {
         if (anime && userRef.current) {
           setIsFavorite(false);
+          console.log("on handle favorite remove - false");
           userRef.current.favoriteAnimes = userRef.current?.favoriteAnimes.filter(favAnime => {
             return favAnime.id !== anime.id;
           });
@@ -136,8 +141,10 @@ const AnimeDetails = () => {
 
   async function updateAdminAnime() {
     const res = await ADMIN_URL.patch(`/anime/update/${anime?.id}`, anime);
+    const data: Anime = res.data;
     if (res.status === 200) {
-      nav(`/${anime?.title}`)
+      nav(`/${anime?.title}`);
+      setEditing(false);
     }
   }
 
@@ -288,7 +295,6 @@ const AnimeDetails = () => {
                 ) : (
                   <p className="text-xl">{anime.rating}</p>
                 )}
-
               </div>
 
               {/* Status */}
@@ -323,7 +329,7 @@ const AnimeDetails = () => {
                   <input
                     type="date"
                     name="startedAiring"
-                    value={anime.startedAiring?.slice(0, 10)}
+                    value={anime.startedAiring.slice(0, 10)}
                     onChange={(e) =>
                       setAnime((prev) =>
                         prev ? { ...prev, [e.target.name]: e.target.value } : prev
@@ -350,12 +356,14 @@ const AnimeDetails = () => {
                 </div>
               </div>
 
-              <div className="flex gap-4">
-              Tags: {anime.genres.map(genre => {
-                return <span className="">
-                  {genre.name} <hr className="" />
-                </span>
-              })}
+              <div className="flex justify-between">
+                <div className="flex gap-4">
+                  Tags: {anime.genres.map(genre => {
+                    return <span className="">
+                      {genre.name} <hr className="" />
+                    </span>
+                  })}
+                </div>
               </div>
             </div>
           </div>

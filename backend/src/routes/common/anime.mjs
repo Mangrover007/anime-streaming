@@ -2,7 +2,7 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { getAnimeByNameSchema, getAnimeSchema } from "../../schemas/common/anime.mjs";
 const prisma = new PrismaClient();
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const router = Router();
 
@@ -33,35 +33,37 @@ router.post("/all/genre", async (req, res) => {
 
 router.get("/all",
   function (req, res, next) {
+    console.log(req.query);
     const validation = getAnimeSchema.safeParse(req.query);
     if (validation.success) {
       req.validated = validation.data;
+      console.log(validation);
       return next();
     }
     return res.status(400).send("Bad request");
   }, async (req, res) => {
     try {
-      const { pageNumber, query } = req.validated;
+      let { p, q } = req.validated;
 
       const findCount = await prisma.anime.count({
         where: {
           title: {
-            startsWith: query,
+            startsWith: q,
             mode: "insensitive",
           }
         },
       });
 
-      const maxPage = Math.ceil(findCount / PAGE_SIZE);
+      let maxPage = Math.ceil(findCount / PAGE_SIZE);
       if (maxPage === 0) maxPage = 1;
-      if (pageNumber > maxPage) pageNumber = maxPage;
+      if (p > maxPage) p = maxPage;
 
       const findAllAnime = await prisma.anime.findMany({
-        skip: (pageNumber - 1) * PAGE_SIZE,
+        skip: (p - 1) * PAGE_SIZE,
         take: PAGE_SIZE,
         where: {
           title: {
-            startsWith: query,
+            startsWith: q,
             mode: "insensitive",
           }
         },
@@ -75,8 +77,8 @@ router.get("/all",
 
       return res.status(200).send(findAllAnime);
     } catch (error) {
-      console.log("anime /all/:pageNumber error", error);
-      res.status(500).send("caught error in anime /all/:pageNumber")
+      console.log("anime /all error", error);
+      res.status(500).send("caught error in anime /all")
     }
   });
 
@@ -111,21 +113,72 @@ router.get("/:name",
     }
   });
 
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const animeId = parseInt(req.params.id);
-//     if (isNaN(animeId)) return res.status(400).send("Invalid anime id");
-//     const findAnime = await prisma.anime.findUnique({
-//       where: {
-//         id: animeId
-//       }
-//     });
-//     if (!findAnime) return res.status(404).send(`No anime found with id - ${animeId}`);
-//     return res.status(200).send(findAnime);
-//   } catch (error) {
-//     console.log("anime /:id error", error);
-//     res.status(500).send("caught error in anime /:id");
-//   }
-// });
+router.get("/popular/:p", async (req, res) => {
+  try {
+    let p = req.params.p;
+    p = parseInt(p);
+    if (isNaN(p)) p = 1;
+
+    const findCount = await prisma.anime.count();
+
+    let maxPage = Math.ceil(findCount / PAGE_SIZE);
+    if (maxPage === 0) maxPage = 1;
+    if (p > maxPage) p = maxPage;
+
+    const findAllAnime = await prisma.anime.findMany({
+      skip: (p - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: {
+        popularity: "desc",
+      },
+      include: {
+        genres: true,
+      },
+    });
+
+    // Simulate network delay for testing
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log(findAllAnime, "fuck me right");
+    return res.status(200).send(findAllAnime);
+  } catch (error) {
+    console.error("anime /popular error", error);
+    res.status(500).send("Caught error in anime /popular");
+  }
+});
+
+router.get("/latest/:p", async (req, res) => {
+  try {
+    let p = req.params.p;
+    p = parseInt(p);
+    if (isNaN(p)) p = 1;
+
+    const findCount = await prisma.anime.count();
+
+    let maxPage = Math.ceil(findCount / PAGE_SIZE);
+    if (maxPage === 0) maxPage = 1;
+    if (p > maxPage) p = maxPage;
+
+    const findAllAnime = await prisma.anime.findMany({
+      skip: (p - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        genres: true,
+      },
+    });
+
+    // Simulate network delay for testing
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log(findAllAnime, "fuck me right");
+    return res.status(200).send(findAllAnime);
+  } catch (error) {
+    console.error("anime /popular error", error);
+    res.status(500).send("Caught error in anime /popular");
+  }
+});
 
 export { router as commonAnime };

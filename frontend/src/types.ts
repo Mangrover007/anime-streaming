@@ -7,7 +7,7 @@ export type Anime = {
   status: string;
   thumbnailUrl: string;
   startedAiring: string;
-  finishedAiring: string;
+  finishedAiring: string | null;
   createdAt: string;
   updatedAt: string;
   genres: {

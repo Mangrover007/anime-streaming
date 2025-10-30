@@ -61,6 +61,7 @@ model Anime {
 
   favoritedBy     User[]              @relation("UserFavorites")
   userProgress    UserAnimeProgress[]
+  popularity      Int                 @default(0)
 }
 
 model Genre {

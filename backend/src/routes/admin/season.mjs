@@ -16,6 +16,8 @@ router.post("/:animeName",
       req.validated = validation.data;
       return next();
     }
+    console.log(validation.error);
+    console.log(req.body);
     return res.status(400).send("Bad request");
   }, async (req, res) => {
 

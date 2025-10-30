@@ -20,12 +20,13 @@ const AdminAddSeason = ({ onClose }: AdminAddSeasonProps) => {
   const [isSaving, setIsSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
+    console.log("fuck you test")
     e.preventDefault();
     setIsSaving(true);
     try {
       await ADMIN_URL.post(`/season/${params.animeName}`, {
         startedAiring: new Date(addFormData.startedAiring).toISOString(),
-        finishedAiring: new Date(addFormData.finishedAiring).toISOString(),
+        finishedAiring: addFormData.finishedAiring ? new Date(addFormData.finishedAiring).toISOString() : null,
         isFinished: addFormData.isFinished,
       });
       window.location.reload();
