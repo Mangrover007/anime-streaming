@@ -12,6 +12,17 @@ import cookieParser from "cookie-parser";
 import { routes } from "./routes.mjs";
 import { uploadVideo } from "./cloudinary.mjs";
 
+import nodemailer from "nodemailer";
+export const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_EMAIL,
+    pass: process.env.SMTP_PASS
+  }
+});
+
 const app = express();
 
 app.use(cookieParser());
@@ -23,7 +34,7 @@ app.get("/", (req, res) => {
   res.send("OK");
 });
 
-app.get("/upload", async (req,res) => {
+app.get("/upload", async (req, res) => {
   try {
     const result = await uploadVideo(path.join(__dirname, "public", "videos", "video.mp4"));
     console.log(result);

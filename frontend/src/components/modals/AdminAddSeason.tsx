@@ -20,7 +20,7 @@ const AdminAddSeason = ({ onClose }: AdminAddSeasonProps) => {
   const [isSaving, setIsSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    console.log("fuck you test")
+    // console.log("fuck you test")
     e.preventDefault();
     setIsSaving(true);
     try {

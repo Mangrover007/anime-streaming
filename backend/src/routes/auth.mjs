@@ -25,6 +25,10 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
     return res.status(404).send("Email not found.");
   }
 
+  if (!findUser.verified) {
+    return res.status(401).send("Email not verified. Please verify email before logging in.");
+  }
+
   const isPasswordCorrect = await bcryptjs.compare(password, findUser.password);
   if (!isPasswordCorrect) {
     return res.status(401).send("Incorrect Password");
@@ -91,6 +95,8 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
       }
     },
   });
+
+  const verifyEmailToken = 
 
   const token = jwt.sign(
     { username: newUser.username, id: newUser.id },
