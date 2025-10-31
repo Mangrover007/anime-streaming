@@ -43,7 +43,8 @@ const AnimeDetails = () => {
   }
 
   function isCurrentAnimeFavorite() {
-    if (!user) return false;
+    if (user == null || user.favoriteAnimes == null) return false;
+    // console.log(user);
     const findIndex = user.favoriteAnimes.findIndex(favAnime => {
       return favAnime.id === anime?.id
     });
@@ -110,7 +111,7 @@ const AnimeDetails = () => {
       }
     }
     else {
-      console.log("removing or nah")
+      // console.log("removing or nah")
       const res = await PROT_URL.post("/anime/remove-fav", {
         animeId: anime?.id,
         userId: userRef.current?.id
@@ -118,7 +119,7 @@ const AnimeDetails = () => {
       if (res.status === 200) {
         if (anime && userRef.current) {
           setIsFavorite(false);
-          console.log("on handle favorite remove - false");
+          // console.log("on handle favorite remove - false");
           userRef.current.favoriteAnimes = userRef.current?.favoriteAnimes.filter(favAnime => {
             return favAnime.id !== anime.id;
           });
@@ -128,7 +129,7 @@ const AnimeDetails = () => {
   }
 
   function handleAdminChange(e: React.FocusEvent<HTMLParagraphElement, Element>) {
-    console.log(e.target.textContent);
+    // console.log(e.target.textContent);
     const val = e.target.textContent;
     const key = e.target.id;
     setAnime(prev => {

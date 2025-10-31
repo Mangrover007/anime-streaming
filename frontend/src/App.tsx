@@ -13,6 +13,7 @@ import Settings from "./components/user-profile/Settings";
 import type { Season, User } from "./types";
 import Popular from "./components/home/Popular";
 import Latest from "./components/home/Latest";
+import VerifyRegistration from "./components/VerifyRegistration";
 
 
 type PORTAL_CONTEXT = {
@@ -62,7 +63,7 @@ const App = () => {
       }
       catch (err) {
         setIsAdmin(false);
-        console.log(err);
+        console.error(err);
       }
     }
     amIAdmin();
@@ -125,7 +126,7 @@ const App = () => {
       element: <Layout />,
       children: [
         {
-          path: "trending",
+          path: "popular",
           element: <Popular />
         },
         {
@@ -133,6 +134,10 @@ const App = () => {
           element: <Latest />
         }
       ]
+    },
+    {
+      path: "/auth/verify-registration",
+      element: <VerifyRegistration />
     }
   ]);
 

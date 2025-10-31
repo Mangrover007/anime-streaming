@@ -63,7 +63,7 @@ router.get("/all",
         take: PAGE_SIZE,
         where: {
           title: {
-            startsWith: q,
+            contains: q,
             mode: "insensitive",
           }
         },
@@ -73,7 +73,7 @@ router.get("/all",
       });
 
       // this for testing only
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
 
       return res.status(200).send(findAllAnime);
     } catch (error) {
@@ -116,6 +116,7 @@ router.get("/:name",
 router.get("/popular/:p", async (req, res) => {
   try {
     let p = req.params.p;
+    console.log(p, "fuck me right");
     p = parseInt(p);
     if (isNaN(p)) p = 1;
 
@@ -137,10 +138,17 @@ router.get("/popular/:p", async (req, res) => {
     });
 
     // Simulate network delay for testing
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(findAllAnime, "fuck me right");
-    return res.status(200).send(findAllAnime);
+    return res.status(200).send({
+      data: findAllAnime,
+      metadata: {
+        page: {
+          max: maxPage,
+          current: p,
+        }
+      }
+    });
   } catch (error) {
     console.error("anime /popular error", error);
     res.status(500).send("Caught error in anime /popular");
@@ -171,10 +179,18 @@ router.get("/latest/:p", async (req, res) => {
     });
 
     // Simulate network delay for testing
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log(findAllAnime, "fuck me right");
-    return res.status(200).send(findAllAnime);
+    return res.status(200).send({
+      data: findAllAnime,
+      metadata: {
+        page: {
+          current: p,
+          max: maxPage
+        }
+      }
+    });
   } catch (error) {
     console.error("anime /popular error", error);
     res.status(500).send("Caught error in anime /popular");

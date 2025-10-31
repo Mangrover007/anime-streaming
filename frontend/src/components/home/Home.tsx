@@ -12,7 +12,9 @@ const Home = () => {
   async function getLatestAnime() {
     try {
       const res = await COMMON_URL.get(`/anime/latest/1`);
-      setLatestAnimeList(res.data); // assuming res.data is Anime[]
+      const { data }: { data: Anime[] } = res.data;
+      // console.log(res);
+      setLatestAnimeList(data); // assuming res.data is Anime[]
     } catch (err) {
       console.error("Failed to fetch anime list:", err);
     }
@@ -21,7 +23,8 @@ const Home = () => {
   async function getPopularAnime() {
     try {
       const res = await COMMON_URL.get(`/anime/popular/1`);
-      setPopularAnimeList(res.data); // assuming res.data is Anime[]
+      const { data }: { data: Anime[] } = res.data;
+      setPopularAnimeList(data); // assuming res.data is Anime[]
     } catch (err) {
       console.error("Failed to fetch anime list:", err);
     }
@@ -34,14 +37,22 @@ const Home = () => {
 
   return (
     <>
-      {/* Recently Added Anime section */}
+      {/* Popular Anime section */}
       <div className="px-[100px] py-16 bg-[#242031] min-h-screen text-white">
-        <h1 className="text-4xl font-extrabold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
-          NEW RELEASES
-        </h1>
-        <button onClick={() => nav("/misc/latest")}>VIEW MORE</button>
+        <div className="flex items-center justify-between mb-10">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
+            POPULAR SHOWS
+          </h1>
+          <button
+            onClick={() => nav("/misc/popular")}
+            className="text-gray-400 text-sm font-medium opacity-70 hover:opacity-100 transition-opacity focus:outline-none"
+          >
+            VIEW MORE
+          </button>
+        </div>
+
         <div className="grid grid-cols-5 gap-10">
-          {latestAnimeList.map((anime) => (
+          {popularAnimeList.map((anime) => (
             <AnimeCard
               key={Math.random()}
               imgUrl={anime.thumbnailUrl}
@@ -51,14 +62,22 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Popular Anime section */}
+      {/* Recently Added Anime section */}
       <div className="px-[100px] py-16 bg-[#242031] min-h-screen text-white">
-        <h1 className="text-4xl font-extrabold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
-          POPULAR
-        </h1>
-        <button onClick={() => nav("/misc/trending")}>VIEW MORE</button>
+        <div className="flex items-center justify-between mb-10">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
+            RECENTLY ADDED SHOWS
+          </h1>
+          <button
+            onClick={() => nav("/misc/latest")}
+            className="text-gray-400 text-sm font-medium opacity-70 hover:opacity-100 transition-opacity focus:outline-none"
+          >
+            VIEW MORE
+          </button>
+        </div>
+
         <div className="grid grid-cols-5 gap-10">
-          {popularAnimeList.map((anime) => (
+          {latestAnimeList.map((anime) => (
             <AnimeCard
               key={Math.random()}
               imgUrl={anime.thumbnailUrl}

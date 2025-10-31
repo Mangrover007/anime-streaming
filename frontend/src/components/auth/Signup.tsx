@@ -1,10 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AUTH_URL } from "../../api";
-import { PORTAL } from "../../App";
 
 const Signup = () => {
-  const { setUser } = useContext(PORTAL);
   const nav = useNavigate();
 
   const [registerData, setRegisterData] = useState({
@@ -12,6 +10,8 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
+  const [message, setMessage] = useState<string>("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -25,8 +25,7 @@ const Signup = () => {
     try {
       const res = await AUTH_URL.post("/register", registerData);
       if (res.status === 201) {
-        setUser(res.data);
-        nav("/home");
+        setMessage("Email registered. Please check your email to veirfy it and then proceed to log in.");
       }
     } catch (error) {
       console.error("Signup failed:", error);
@@ -83,6 +82,16 @@ const Signup = () => {
             onChange={handleChange}
           />
         </div>
+
+        <p
+          className={`mt-4 text-center text-sm transition-all duration-300 ${message
+              ? "text-cyan-300 bg-[#28243a]/60 px-4 py-2 rounded-lg border border-cyan-400/30 shadow-[0_0_10px_rgba(0,255,255,0.1)]"
+              : "text-transparent"
+            }`}
+        >
+          {message}
+        </p>
+
 
         <button
           onClick={handleSignup}

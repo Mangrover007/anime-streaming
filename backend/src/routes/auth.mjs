@@ -9,6 +9,8 @@ import { userRole } from "../utils/userRole.mjs";
 
 import { verifyToken } from "../middlewares/verifyToken.mjs";
 
+import { transporter } from "../index.mjs";
+
 const prisma = new PrismaClient();
 
 const router = Router();
@@ -96,7 +98,25 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
     },
   });
 
-  const verifyEmailToken = 
+  const verifyEmailToken = await prisma.verifyEmail.create({
+    data: {
+      expiresAt: new Date(Date.now() + 1000*60*60),
+      token: crypto.randomUUID(),
+      user: {
+        connect: {
+          id: newUser.id
+        }
+      }
+    }
+  });
+
+  const verificationLink = `http://localhost:5000/auth/verify-registration?token=${verifyEmailToken.token}`;
+  transporter.sendMail({
+    from: process.env.SMTP_EMAIL,
+    to: newUser.email,
+    subject: "VERIFY EMAIL BITCH",
+    text: `Yo verify token bitch: ${verificationLink}`
+  })
 
   const token = jwt.sign(
     { username: newUser.username, id: newUser.id },
@@ -159,5 +179,35 @@ router.get("/logout", verifyToken, async (req, res) => {
 
   res.status(200).send({ message: "Logged out successfully" });
 });
+
+
+router.get("/verify-registration", async (req, res) => {
+  const { token } = req.query;
+  console.log(token);
+  const findToken = await prisma.verifyEmail.findUnique({
+    where: {
+      token: token
+    }
+  });
+  console.log(findToken);
+  if (!findToken) res.status(401).send("Token not found.");
+  if (new Date(Date.now()) > findToken.expiresAt) res.status(401).send("Token expired");
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: findToken.userId
+    },
+    data: {
+      verified: true
+    }
+  });
+  const fuckyou = await prisma.verifyEmail.delete({
+    where: {
+      token: token
+    }
+  });
+  console.log(fuckyou);
+  return res.status(200).send(updatedUser);;
+});
+
 
 export { router as authRoute };
