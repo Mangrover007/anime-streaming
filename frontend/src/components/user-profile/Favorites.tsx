@@ -9,7 +9,7 @@ const Favorites = () => {
 
   const [favorites, setFavorites] = useState<Anime[]>([]);
   const { user } = useContext(PORTAL);
-  
+
   useEffect(() => {
     console.log("running or no", user)
     async function getFavorites() {
@@ -27,7 +27,56 @@ const Favorites = () => {
         Favorite Anime
       </h1>
 
-      <div className="grid grid-cols-6 gap-6">
+      <div className="flex flex-wrap gap-6">
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}{favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+
+
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
+        {favorites.map((anime) => (
+          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
+        ))}
         {favorites.map((anime) => (
           <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
         ))}

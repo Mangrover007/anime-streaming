@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Favorites from "./Favorites";
 import { PORTAL } from "../../App";
+import Profile from "./Profile";
 
 const Settings = () => {
   const { user } = useContext(PORTAL);
@@ -12,6 +13,8 @@ const Settings = () => {
   });
 
   const [activeMenu, setActiveMenu] = useState("account");
+  const [modalActive, setModalActive] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Handle avatar image upload
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,8 +28,32 @@ const Settings = () => {
     }
   };
 
+  function handleCloseModal(e: MouseEvent) {
+    const target = e.target as Node;
+    if (modalRef.current) {
+      if (!modalRef.current.contains(target)) {
+        // debugger
+        setModalActive(false);
+        console.log("outside modal");
+      }
+    }
+    else {
+      console.log("inside modal");
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", handleCloseModal);
+    return () => document.removeEventListener("click", handleCloseModal);
+  }, [])
+
+  function toggleCustomizeModal(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation();
+    setModalActive(prev => !prev);
+  }
+
   return (
-    <div className="flex min-h-screen bg-[#0f0c1a] text-gray-300 font-sans">
+    <div className="flex min-h-screen bg-[#0f0c1a] text-gray-300 font-sans relative">
       {/* LEFT SIDEBAR */}
       <aside className="fixed top-0 left-0 h-screen w-[300px] py-8 px-6 bg-[#1c1a2e] border-r border-[#2c2844] flex flex-col items-center z-20 overflow-y-auto">
 
@@ -92,129 +119,91 @@ const Settings = () => {
       </aside>
 
       {/* RIGHT CONTENT */}
-      {/* RIGHT CONTENT */}
-      <main className="flex-1 relative flex ml-[300px]">
+      <main className="relative ml-[300px]">
 
         {/* Background Image + Glass effect container */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="fixed inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url("banner.png")' }}
           aria-hidden="true"
-        ></div>
+        />
 
         {/* Glass-like overlay */}
-        {/* Glass-like overlay with smooth fade from left */}
-        {/* Glass-like overlay with dark-to-light gradient */}
         <div
           className="absolute inset-0 backdrop-blur-md pointer-events-none"
           style={{
             background:
               'linear-gradient(to right, rgba(12, 10, 26, 0.85) 0%, rgba(12, 10, 26, 0.6) 20%, rgba(255, 255, 255, 0.15) 80%, rgba(255, 255, 255, 0.3) 100%)',
           }}
-        ></div>
+        />
 
         {/* Content (needs to be above overlays) */}
         <div className="relative w-full z-10 flex justify-center">
           {activeMenu === "a" ? (
-            <div className="bg-[#1c1a2e] bg-opacity-70 rounded-lg p-8 shadow-md border border-[#2c2844] backdrop-blur-sm max-w-md w-full">
-              <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6">
-                Account Settings
-              </h2>
-
-              <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
-                {/* Email Field */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-semibold text-gray-400"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    defaultValue="user@example.com"
-                    placeholder="you@example.com"
-                    required
-                    className="w-full px-4 py-3 bg-[#2c2844] text-white rounded-full border border-pink-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                  />
-                </div>
-
-                {/* Password Section */}
-                <fieldset className="space-y-6 border-t border-[#2c2844] pt-6">
-                  <legend className="text-lg font-semibold text-gray-300 mb-4">
-                    Change Password
-                  </legend>
-
-                  <div>
-                    <label
-                      htmlFor="currentPassword"
-                      className="block mb-2 text-sm font-semibold text-gray-400"
-                    >
-                      Current Password
-                    </label>
-                    <input
-                      id="currentPassword"
-                      type="password"
-                      name="currentPassword"
-                      placeholder="••••••••"
-                      defaultValue="password123"
-                      required
-                      className="w-full px-4 py-3 bg-[#2c2844] text-white rounded-full border border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="newPassword"
-                      className="block mb-2 text-sm font-semibold text-gray-400"
-                    >
-                      New Password
-                    </label>
-                    <input
-                      id="newPassword"
-                      type="password"
-                      name="newPassword"
-                      placeholder="Leave blank to keep current password"
-                      className="w-full px-4 py-3 bg-[#2c2844] text-white rounded-full border border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="confirmPassword"
-                      className="block mb-2 text-sm font-semibold text-gray-400"
-                    >
-                      Confirm New Password
-                    </label>
-                    <input
-                      id="confirmPassword"
-                      type="password"
-                      name="confirmPassword"
-                      placeholder="Confirm your new password"
-                      className="w-full px-4 py-3 bg-[#2c2844] text-white rounded-full border border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    />
-                  </div>
-                </fieldset>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full py-3 mt-4 text-lg font-bold text-white bg-pink-500 rounded-full border-2 border-transparent hover:opacity-90 transition"
-                >
-                  Save Changes
-                </button>
-              </form>
-            </div>
+            <Profile />
           ) : (
-            <div className="w-full h-full">
-              <Favorites />
-            </div>
+            <Favorites />
           )}
         </div>
       </main>
 
+      <div className="fixed bottom-6 right-6 z-[100] h-fit aspect-square p-4 flex items-center justify-center rounded-full bg-[#1a172b]/90 border border-[#2e2a47] text-gray-300 text-xl hover:text-white hover:border-pink-400 hover:bg-[#242031] transition-all duration-200 cursor-pointer select-none" title="Customize" onClick={e => toggleCustomizeModal(e)}>
+        ✏️
+      </div>
+
+      {/* {modalActive && <>
+        <div
+          ref={modalRef}
+          className="fixed bottom-6 right-6 z-50 w-72 p-4 rounded-xl shadow-lg border border-gray-700 bg-[#1a172b]/95 backdrop-blur-md flex flex-col gap-3"
+        >
+          <h3 className="text-white text-lg font-semibold text-center">Customize Background</h3>
+
+          <input
+            type="file"
+            accept="image/*"
+            className="w-full px-3 py-2 rounded-md bg-[#2a2540] text-gray-200 cursor-pointer"
+          />
+
+          <button
+            className="mt-2 w-full px-3 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-md transition"
+            onClick={() => setModalActive(false)}
+          >
+            Close
+          </button>
+        </div>
+      </>} */}
+
+      {modalActive && (
+        <div
+          ref={modalRef}
+          className="fixed bottom-6 right-6 z-50 w-72 p-4 rounded-xl shadow-lg border border-gray-700 bg-[#1a172b]/95 flex flex-col gap-4"
+        >
+          {/* Header */}
+          <h3 className="text-white text-lg font-semibold text-center">
+            Customize Background
+          </h3>
+
+          {/* File Upload Box */}
+          <label className="w-full p-6 border-2 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-cyan-400 transition">
+            <span className="text-gray-400 mb-2 text-center">
+              Click to upload an image
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+            />
+          </label>
+
+          {/* Close Button */}
+          <button
+            className="mt-2 w-full px-3 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-md transition"
+            onClick={() => setModalActive(false)}
+          >
+            Close
+          </button>
+        </div>
+      )}
 
     </div>
   );
