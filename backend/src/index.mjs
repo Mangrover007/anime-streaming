@@ -25,16 +25,12 @@ export const transporter = nodemailer.createTransport({
   }
 });
 
-import multer from "multer";
+import multer, { memoryStorage } from "multer";
 import { uploadAvatar } from "./cloudinary.mjs";
 import { verifyToken } from "./middlewares/verifyToken.mjs";
-import { promisify } from "util";
-import fs, { unlink } from "fs";
 export const upload = multer({
-  dest: path.join(__dirname, "../public/")
+  storage: memoryStorage()
 });
-
-const unlinkAsync = promisify(fs.unlink);
 
 const app = express();
 
@@ -49,7 +45,7 @@ app.get("/", (req, res) => {
 
 app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res) => {
   try {
-    const result = await uploadAvatar(req.file.path, req.user.id);
+    const result = await uploadAvatar(req.file.buffer, req.user.id);
     await prisma.user.update({
       where: {
         username: req.user.username
@@ -58,7 +54,6 @@ app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res
         profilePicture: result.public_id
       }
     });
-    await unlinkAsync(req.file.path);
     return res.send("OK");
   } catch (err) {
     console.log(err);
