@@ -98,7 +98,7 @@ const Latest = () => {
         {pageData &&
           new Array(10)
             .fill(0)
-            .map((ele, index) => {
+            .map((_, index) => {
               return (
                 <div
                   key={index}

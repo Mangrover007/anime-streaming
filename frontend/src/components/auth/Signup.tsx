@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { AUTH_URL } from "../../api";
 
 const Signup = () => {
-  const nav = useNavigate();
-
   const [registerData, setRegisterData] = useState({
     username: "",
     email: "",

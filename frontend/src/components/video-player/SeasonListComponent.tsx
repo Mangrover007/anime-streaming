@@ -1,9 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import type { Season } from "../../types";
 import EditButton from "../EditButton";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { PORTAL } from "../../App";
-import ReactDOM from "react-dom"
 
 type SeasonListProps = {
   seasonList: Season[];
