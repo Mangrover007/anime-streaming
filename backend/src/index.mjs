@@ -28,10 +28,13 @@ export const transporter = nodemailer.createTransport({
 import multer from "multer";
 import { uploadAvatar } from "./cloudinary.mjs";
 import { verifyToken } from "./middlewares/verifyToken.mjs";
-import { isAdmin } from "./middlewares/isAdmin.mjs";
+import { promisify } from "util";
+import fs, { unlink } from "fs";
 export const upload = multer({
   dest: path.join(__dirname, "../public/")
 });
+
+const unlinkAsync = promisify(fs.unlink);
 
 const app = express();
 
@@ -55,6 +58,7 @@ app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res
         profilePicture: result.public_id
       }
     });
+    await unlinkAsync(req.file.path);
     return res.send("OK");
   } catch (err) {
     console.log(err);
