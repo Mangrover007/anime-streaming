@@ -53,6 +53,7 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 1 day
       sameSite: "none",
+      partitioned: true,
       secure: true
     });
 
@@ -60,6 +61,7 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       sameSite: "none",
+      partitioned: true,
       secure: true
     });
 
@@ -142,6 +144,7 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
       sameSite: "none",
+      partitioned: true,
       secure: true
     });
 
@@ -149,6 +152,7 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
       sameSite: "none",
+      partitioned: true,
       secure: true
     });
 
@@ -186,12 +190,14 @@ router.get("/logout", verifyToken, async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     sameSite: "none",
+    partitioned: true,
     path: "/",
   });
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
     sameSite: "none",
+    partitioned: true,
     path: "/",
   });
 
