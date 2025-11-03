@@ -1,5 +1,5 @@
 import axios from "axios";
-const _baseURL = import.meta.env.BASE_URL;
+const _baseURL = import.meta.env.VITE_BASE_URL;
 
 export const COMMON_URL = axios.create({
     baseURL: `${_baseURL}`,
