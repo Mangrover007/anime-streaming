@@ -63,6 +63,8 @@ app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res
 
 // app.post("/upload-episode", isAdmin, )
 
-app.listen(process.env.PORT, () => {
-  console.log("Server is up and running :thumbs up:");
-});
+// app.listen(process.env.PORT, () => {
+//   console.log("Server is up and running :thumbs up:");
+// });
+
+export default app;
