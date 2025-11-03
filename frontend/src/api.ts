@@ -1,21 +1,22 @@
 import axios from "axios";
+const _baseURL = import.meta.env.BASE_URL;
 
 export const COMMON_URL = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: _baseURL,
     withCredentials: true,
 });
 
 export const AUTH_URL = axios.create({
-    baseURL: "http://localhost:3000/auth",
+    baseURL: _baseURL + "auth",
     withCredentials: true,
 });
 
 export const PROT_URL = axios.create({
-    baseURL: "http://localhost:3000/prot",
+    baseURL: _baseURL + "prot",
     withCredentials: true,
 });
 
 export const ADMIN_URL = axios.create({
-    baseURL: "http://localhost:3000/admin",
+    baseURL: _baseURL + "admin",
     withCredentials: true,
 });

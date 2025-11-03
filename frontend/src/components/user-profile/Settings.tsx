@@ -38,7 +38,7 @@ const Settings = () => {
     if (!avatar) return
     const data = new FormData();
     data.append("avatar", avatar);
-    const res = await axios.post("http://localhost:3000/upload-avatar", data, {
+    const res = await axios.post("https://koala-anime-backend.vercel.app/upload-avatar", data, {
       headers: {
         "Content-Type": "multipart/form-data"
       },
