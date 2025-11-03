@@ -43,9 +43,9 @@ app.use(express.json());
 
 app.use(routes);
 
-// app.get("/", (req, res) => {
-//   res.send("OK");
-// });
+app.get("/", (req, res) => {
+  res.send("OK");
+});
 
 app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res) => {
   try {
