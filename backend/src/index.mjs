@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import cors from "cors";
+
 import { fileURLToPath } from "url";
 import path from "path";
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +35,11 @@ export const upload = multer({
 });
 
 const app = express();
+
+app.use(cors({
+  origin: process.env.ORIGIN,
+  credentials: true,
+}));
 
 app.use(cookieParser());
 app.use(express.json());

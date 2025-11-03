@@ -52,13 +52,15 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      sameSite: "lax"
+      sameSite: "lax",
+      secure: true
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: "lax"
+      sameSite: "lax",
+      secure: true
     });
 
     // const temp = await userRole(findUser.username);
@@ -139,13 +141,15 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: "lax"
+      sameSite: "lax",
+      secure: true
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: "lax"
+      sameSite: "lax",
+      secure: true
     });
 
     res.status(201).send(newUser);
