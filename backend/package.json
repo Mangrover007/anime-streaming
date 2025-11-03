@@ -5,7 +5,8 @@
   "scripts": {
     "start:dev": "nodemon ./src/index.mjs",
     "start": "node ./src/index.mjs",
-    "build": "npm run build"
+    "build": "npm run build",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
