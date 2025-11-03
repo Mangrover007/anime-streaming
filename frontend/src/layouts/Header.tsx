@@ -48,7 +48,7 @@ const Header = () => {
       controllerRef.current = new AbortController();
       const signal = controllerRef.current.signal;
 
-      const res = await axios.get(`http://localhost:3000/anime/all?q=${e.target.value}`, {
+      const res = await axios.get(`https://koala-anime-backend.vercel.app/anime/all?q=${e.target.value}`, {
         signal: signal
       })
 
