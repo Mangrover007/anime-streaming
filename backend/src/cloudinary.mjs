@@ -1,6 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
+import { Readable } from "stream";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,9 +33,8 @@ export async function uploadVideo(filePath) {
     });
 }
 
-export async function uploadAvatar(filePath, userId) {
+export async function uploadAvatar(buffer, userId) {
     return new Promise((resolve, reject) => {
-        const readStream = fs.createReadStream(filePath);
         const uploadStream = cloudinary.uploader.upload_stream({
             public_id: `/avatars/${userId}`,
             overwrite: true,
@@ -50,6 +51,6 @@ export async function uploadAvatar(filePath, userId) {
                 resolve(result);
             }
         })
-        readStream.pipe(uploadStream);
+        Readable.from(buffer).pipe(uploadStream);
     });
 }
