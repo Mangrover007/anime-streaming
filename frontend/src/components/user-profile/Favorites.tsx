@@ -31,55 +31,6 @@ const Favorites = () => {
         {favorites.map((anime) => (
           <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
         ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}{favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-
-
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
-        {favorites.map((anime) => (
-          <AnimeCard key={anime.id} imgUrl={anime.thumbnailUrl} title={anime.title} />
-        ))}
       </div>
     </div>
   );

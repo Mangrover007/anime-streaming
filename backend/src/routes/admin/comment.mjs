@@ -28,7 +28,7 @@ router.delete("/",
 
       return res.json(deleteComment);
     } catch (error) {
-      console.log("error in /comment DELETE", error);
+      console.error("error in /comment DELETE", error);
       return res.status(500).send("cannot delete comment");
     }
   });

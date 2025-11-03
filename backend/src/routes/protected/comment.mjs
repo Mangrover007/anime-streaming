@@ -50,7 +50,7 @@ router.post("/",
         metadata: ""
       });
     } catch (error) {
-      console.log("caught error in /comment POST", error);
+      console.error("caught error in /comment POST", error);
       return res.status(500).send("caught error in /comment POST");
     }
   });
@@ -82,7 +82,7 @@ router.patch("/",
 
       return res.json(updateComment);
     } catch (error) {
-      console.log("error in /comment PATCH", error);
+      console.error("error in /comment PATCH", error);
       return res.status(500).send("error in /comment PATCH - either internal server error, or not authorized, or comment with given id not found");
     }
   });
@@ -110,7 +110,7 @@ router.delete("/",
 
       return res.json(deleteComment);
     } catch (error) {
-      console.log("error in /comment DELETE", error);
+      console.error("error in /comment DELETE", error);
       return res.status(500).send("cannot delete comment");
     }
   });

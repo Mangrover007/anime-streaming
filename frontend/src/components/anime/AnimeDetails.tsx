@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { ADMIN_URL, COMMON_URL, PROT_URL } from "../../api"; // Assuming this is where your API is defined
+import { ADMIN_URL, COMMON_URL, PROT_URL } from "../../api";
 
 import { PORTAL } from "../../App";
 import type { Anime, Season } from "../../types";
 
 const AnimeDetails = () => {
-  const { animeName } = useParams<{ animeName: string }>(); // Get the anime ID from the URL
+  const { animeName } = useParams<{ animeName: string }>();
   const [anime, setAnime] = useState<Anime | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -20,10 +20,6 @@ const AnimeDetails = () => {
   const editableStyles = (editing && isAdmin)
     ? "border-2 border-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition duration-200"
     : "";
-
-  // useEffect(() => {
-  //   console.log(isAdmin, "is admin")
-  // }, []);
 
   useEffect(() => {
     if (seasons.length !== 0) {
@@ -96,7 +92,6 @@ const AnimeDetails = () => {
       console.log(res.data);
       if (res.status === 200) {
         if (anime && userRef.current) {
-          // lil cp :)
           setIsFavorite(true);
           console.log("on handle favorite - true");
           userRef.current?.favoriteAnimes.push(anime);
@@ -142,7 +137,7 @@ const AnimeDetails = () => {
 
   async function updateAdminAnime() {
     const res = await ADMIN_URL.patch(`/anime/update/${anime?.id}`, anime);
-    const data: Anime = res.data;
+    // const data: Anime = res.data;
     if (res.status === 200) {
       nav(`/${anime?.title}`);
       setEditing(false);
@@ -170,7 +165,6 @@ const AnimeDetails = () => {
 
   return (
     <div className="min-h-screen bg-[#242031] text-white relative">
-      {/* Background Image - Banner */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -180,17 +174,11 @@ const AnimeDetails = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        {/* Black Overlay */}
         <div className="absolute inset-0 bg-black opacity-30 z-0"></div>
-
-        {/* Optional: Vignette Gradient Overlay (can go above or below black layer depending on your preference) */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#242031] via-transparent to-transparent opacity-80 z-10"></div>
       </div>
 
-      {/* Content Container */}
       <div className="relative z-10 min-h-screen px-[100px] py-8 backdrop-blur-md">
-
-        {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-5xl font-extrabold text-rose-100 text-shadow-black">
             <p
@@ -204,7 +192,6 @@ const AnimeDetails = () => {
             </p>
           </h1>
 
-          {/* Button Group */}
           <div className="flex items-center gap-4">
             {
               isAdmin && <button
@@ -226,15 +213,12 @@ const AnimeDetails = () => {
 
             {isAdmin && (
               <>
-                {/* EDIT Button */}
                 <button
                   className="px-4 py-2 rounded-full bg-rose-600 text-white font-bold hover:bg-rose-500 transition"
                   onClick={() => setEditing((prev) => !prev)}
                 >
                   {editing ? "CANCEL" : "EDIT"}
                 </button>
-
-                {/* SAVE Button */}
                 {editing && (
                   <button
                     className="px-4 py-2 rounded-full bg-rose-600 text-white font-bold hover:bg-rose-500 transition"
@@ -248,9 +232,7 @@ const AnimeDetails = () => {
           </div>
         </div>
 
-        {/* Main Section */}
-        <div className="flex flex-col md:flex-row gap-8 mt-8">
-          {/* Thumbnail */}
+        <main className="flex flex-col md:flex-row gap-8 mt-8">
           <div
             className="flex-shrink-0 w-full md:w-[300px] h-[450px] bg-cover bg-center rounded-lg shadow-lg"
             style={{
@@ -258,12 +240,9 @@ const AnimeDetails = () => {
             }}
           ></div>
 
-          {/* Right Section */}
-          <div className="flex-1">
+          <section className="flex-1">
             <h2 className="text-4xl font-bold text-rose-100 mb-4 text-shadow-black">Anime Details</h2>
-
             <div className="space-y-6 text-shadow-black">
-              {/* Description */}
               <div>
                 <h3 className="text-2xl text-rose-100">Description</h3>
                 <p
@@ -275,10 +254,8 @@ const AnimeDetails = () => {
                 >
                   {anime.description}
                 </p>
-
               </div>
 
-              {/* Rating */}
               <div>
                 <h3 className="text-2xl text-rose-100">Rating</h3>
                 {editing && isAdmin ? (
@@ -298,7 +275,6 @@ const AnimeDetails = () => {
                 )}
               </div>
 
-              {/* Status */}
               <div>
                 <h3 className="text-2xl text-rose-100">Status</h3>
                 {editing && isAdmin ? (
@@ -323,7 +299,6 @@ const AnimeDetails = () => {
 
               </div>
 
-              {/* Dates */}
               <div className="flex justify-between items-center gap-8">
                 <div className="flex flex-col">
                   <h3 className="font-semibold text-2xl text-rose-100">Started Airing</h3>
@@ -367,10 +342,9 @@ const AnimeDetails = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Seasons */}
-          <div className="w-full md:w-[400px] bg-[#2d2a3a]/80 backdrop-blur-md p-6 rounded-lg shadow-md border border-gray-700">
+          <section className="w-full md:w-[400px] bg-[#2d2a3a]/80 backdrop-blur-md p-6 rounded-lg shadow-md border border-gray-700">
             <h3 className="text-3xl font-bold text-rose-100 mb-4">Seasons</h3>
             <ul className="space-y-4">
               {seasons && seasons.length > 0 ? (
@@ -410,10 +384,9 @@ const AnimeDetails = () => {
                 <li className="text-gray-400">No seasons available</li>
               )}
             </ul>
-          </div>
-        </div>
+          </section>
+        </main>
       </div>
-
     </div>
   );
 };

@@ -6,38 +6,36 @@ const PAGE_SIZE = 10;
 
 const router = Router();
 
-router.post("/all/genre", async (req, res) => {
-  const { genre: inputGenres } = req.body;
+// router.post("/all/genre", async (req, res) => {
+//   const { genre: inputGenres } = req.body;
 
-  if (!Array.isArray(inputGenres) || inputGenres.length === 0) {
-    return res.status(400).json({ error: "Genre array is required in the request body." });
-  }
+//   if (!Array.isArray(inputGenres) || inputGenres.length === 0) {
+//     return res.status(400).json({ error: "Genre array is required in the request body." });
+//   }
 
-  try {
-    const animeList = await prisma.anime.findMany({
-      where: {
-        genres: {
-          some: {
-            in: inputGenres,
-          },
-        },
-      },
-    });
+//   try {
+//     const animeList = await prisma.anime.findMany({
+//       where: {
+//         genres: {
+//           some: {
+//             in: inputGenres,
+//           },
+//         },
+//       },
+//     });
 
-    return res.json(animeList);
-  } catch (error) {
-    console.error("Error fetching anime by genre:", error);
-    return res.status(500).json({ error: "Internal server error." });
-  }
-});
+//     return res.json(animeList);
+//   } catch (error) {
+//     console.error("Error fetching anime by genre:", error);
+//     return res.status(500).json({ error: "Internal server error." });
+//   }
+// });
 
 router.get("/all",
   function (req, res, next) {
-    console.log(req.query);
     const validation = getAnimeSchema.safeParse(req.query);
     if (validation.success) {
       req.validated = validation.data;
-      console.log(validation);
       return next();
     }
     return res.status(400).send("Bad request");
@@ -72,12 +70,9 @@ router.get("/all",
         }
       });
 
-      // this for testing only
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-
       return res.status(200).send(findAllAnime);
     } catch (error) {
-      console.log("anime /all error", error);
+      console.error("anime /all error", error);
       res.status(500).send("caught error in anime /all")
     }
   });
@@ -108,7 +103,7 @@ router.get("/:name",
 
       return res.status(200).send(findAnime);
     } catch (error) {
-      console.log("anime /:name error", error);
+      console.error("anime /:name error", error);
       res.status(500).send("caught error in anime /:name");
     }
   });
@@ -116,7 +111,6 @@ router.get("/:name",
 router.get("/popular/:p", async (req, res) => {
   try {
     let p = req.params.p;
-    console.log(p, "fuck me right");
     p = parseInt(p);
     if (isNaN(p)) p = 1;
 
@@ -178,10 +172,6 @@ router.get("/latest/:p", async (req, res) => {
       },
     });
 
-    // Simulate network delay for testing
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log(findAllAnime, "fuck me right");
     return res.status(200).send({
       data: findAllAnime,
       metadata: {

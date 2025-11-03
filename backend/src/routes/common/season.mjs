@@ -31,14 +31,13 @@ router.get("/:title",
           animeId: findAnime.id
         },
         orderBy: {
-          seasonNumber: 'asc',  // or 'desc' if you want descending order
+          seasonNumber: 'asc',
         }
       });
 
-      console.log(findSeasons);
       res.status(200).json(findSeasons);
     } catch (error) {
-      console.log("caught error in /seasons/:title", error);
+      console.error("caught error in /seasons/:title", error);
       res.status(500).send("caught error in /seasons/:title");
     }
   });
@@ -54,7 +53,7 @@ router.get("/:title",
 //     })
 //     res.status(200).json(findSeasons);
 //   } catch (error) {
-//     console.log("caught error in /seasons/:animeId", error);
+//     console.error("caught error in /seasons/:animeId", error);
 //     res.status(500).send("caught error in /seasons/:animeId");
 //   }
 // });

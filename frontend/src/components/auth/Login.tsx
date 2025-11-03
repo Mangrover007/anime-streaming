@@ -32,18 +32,13 @@ const LoginPage = () => {
 
   return (
     <div className="relative min-h-screen bg-[#0f0c1a] flex items-center justify-center overflow-hidden font-sans">
-
-      {/* Background anime image blurred */}
       <img
         src="/banner.png"
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm"
       />
-
-      {/* Animated glow overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-[#1a172b]/80 via-[#1f1b3a]/60 to-[#0f0c1a]/90" />
-
-      {/* Login Card */}
+      
       <div className="relative z-10 w-full max-w-md bg-[#1a172b]/80 backdrop-blur-xl border border-[#2e2a47] rounded-3xl p-10 shadow-[0_0_30px_rgba(255,0,255,0.1)]">
 
         <h1 className="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 mb-6">

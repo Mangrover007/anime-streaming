@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Favorites from "./Favorites";
 import { PORTAL } from "../../App";
 import Profile from "./Profile";
+import axios from "axios";
 
 const Settings = () => {
   const { user } = useContext(PORTAL);
@@ -15,6 +16,8 @@ const Settings = () => {
   const [activeMenu, setActiveMenu] = useState("account");
   const [modalActive, setModalActive] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [avatar, setAvatar] = useState<File>();
+  const [edited, setEdited] = useState<boolean>(false);
 
   // Handle avatar image upload
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,8 +28,24 @@ const Settings = () => {
         setFormData((prev) => ({ ...prev, avatarUrl: reader.result as string }));
       };
       reader.readAsDataURL(file);
+      setAvatar(file);
+      setEdited(true);
     }
   };
+
+  const handleAvatarSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!avatar) return
+    const data = new FormData();
+    data.append("avatar", avatar);
+    const res = await axios.post("http://localhost:3000/upload-avatar", data, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+      withCredentials: true
+    });
+    console.log(res);
+  }
 
   function handleCloseModal(e: MouseEvent) {
     const target = e.target as Node;
@@ -45,7 +64,18 @@ const Settings = () => {
   useEffect(() => {
     document.addEventListener("click", handleCloseModal);
     return () => document.removeEventListener("click", handleCloseModal);
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    setFormData(prev => {
+      console.log(user?.profilePicture, "profile picture");
+      if (!user || !user.profilePicture) return prev
+      return {
+        ...prev,
+        avatarUrl: user?.profilePicture
+      }
+    });
+  }, [user]);
 
   function toggleCustomizeModal(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation();
@@ -57,42 +87,78 @@ const Settings = () => {
       {/* LEFT SIDEBAR */}
       <aside className="fixed top-0 left-0 h-screen w-[300px] py-8 px-6 bg-[#1c1a2e] border-r border-[#2c2844] flex flex-col items-center z-20 overflow-y-auto">
 
-        {/* Go Back Button */}
-        <button
-          onClick={() => nav(-1)}
-          className="self-start mb-8 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
-        >
-          ←
-        </button>
-
-
-        {/* Avatar Upload Section */}
-        <div className="relative group mb-4">
-          <img
-            src={formData.avatarUrl || "/vite.svg"}
-            alt="User Avatar"
-            className="w-24 h-24 rounded-full object-cover border-2 border-cyan-400 transition-all group-hover:brightness-75"
-          />
-          <label
-            htmlFor="avatar-upload"
-            className="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 text-white text-xs font-semibold cursor-pointer transition"
+        <section className="w-full flex flex-col items-center justify-center">
+          {/* Go Back Button */}
+          <button
+            onClick={() => nav(-1)}
+            className="self-start mb-8 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
           >
-            EDIT
-          </label>
-          <input
-            type="file"
-            id="avatar-upload"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarChange}
-          />
-        </div>
+            ←
+          </button>
 
-        {/* Username */}
-        <h2 className="text-lg font-bold text-white mb-6 text-center">{user?.username}</h2>
 
-        {/* Divider */}
-        <hr className="w-full border-[#2c2844] mb-6" />
+          {/* Avatar Upload Section */}
+          <form className="group mb-4 flex flex-col w-full justify-center items-center" onSubmit={handleAvatarSubmit}>
+            <div className="relative flex flex-col">
+              <img
+                src={formData.avatarUrl || "/vite.svg"}
+                alt="User Avatar"
+                className="w-24 h-24 rounded-full object-cover border-2 border-cyan-400 transition-all group-hover:brightness-75"
+              />
+              <label
+                htmlFor="avatar-upload"
+                className="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 text-white text-xs font-semibold cursor-pointer transition"
+              >
+                EDIT
+              </label>
+              <input
+                type="file"
+                id="avatar-upload"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+            </div>
+            {
+              edited && <div className="flex gap-4 mt-2">
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 
+               text-white text-sm font-medium shadow-sm 
+               hover:from-cyan-600 hover:to-blue-600 hover:shadow-md 
+               active:scale-95 transition-all duration-150"
+                >
+                  Save
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEdited(false);
+                    setFormData(prev => {
+                      if (!user || !user.profilePicture) return prev;
+                      return {
+                        ...prev,
+                        avatarUrl: user.profilePicture
+                      };
+                    });
+                  }}
+                  className="px-3 py-1.5 rounded-md border border-gray-500 text-gray-300 
+               text-sm font-medium hover:bg-gray-700 hover:text-white 
+               active:scale-95 transition-all duration-150"
+                >
+                  Cancel
+                </button>
+              </div>
+            }
+          </form>
+
+          {/* Username */}
+          <h2 className="text-lg font-bold text-white mb-6 text-center">{user?.username}</h2>
+
+          {/* Divider */}
+          <hr className="w-full border-[#2c2844] mb-6" />
+        </section>
 
         {/* Menu Items */}
         <nav className="w-full space-y-2">
@@ -119,7 +185,7 @@ const Settings = () => {
       </aside>
 
       {/* RIGHT CONTENT */}
-      <main className="relative ml-[300px]">
+      <main className="relative ml-[300px] w-full">
 
         {/* Background Image + Glass effect container */}
         <div

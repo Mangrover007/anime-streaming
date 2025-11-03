@@ -32,7 +32,7 @@ router.get("/:seasonId/all",
 
       res.status(200).json(findEpisodes);
     } catch (error) {
-      console.log("caught error in /seasons/:seasonId/all", error);
+      console.error("caught error in /seasons/:seasonId/all", error);
       res.status(500).send("caught error in /seasons/:seasonId/all");
     }
   });
@@ -56,10 +56,9 @@ router.get("/:episodeId",
         },
       })
 
-      console.log("EPISODE SERVED", findEpisode);
       res.status(200).json(findEpisode);
     } catch (error) {
-      console.log("caught error in /seasons/:episodeId", error);
+      console.error("caught error in /seasons/:episodeId", error);
       res.status(500).send("caught error in /seasons/:episodeId");
     }
   });

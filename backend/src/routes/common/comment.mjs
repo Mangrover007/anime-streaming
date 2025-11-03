@@ -56,7 +56,7 @@ router.get("/",
       });
 
     } catch (error) {
-      console.log("caught error in /comment GET", error);
+      console.error("caught error in /comment GET", error);
       return res.status(500).send({
         code: 500,
         message: ""

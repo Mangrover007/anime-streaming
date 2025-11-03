@@ -120,7 +120,6 @@ const Header = () => {
             )}
           </div>
         )}
-
       </div>
 
       {/* Right - Auth Buttons */}

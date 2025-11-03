@@ -6,7 +6,7 @@ export async function isAdmin(req, res, next) {
         if (role === "ADMIN") next();
         else return res.status(401).send("not an admin");
     } catch (e) {
-        console.log("isAdmin error:", e);
+        console.error("isAdmin error:", e);
         res.sendStatus(500);
     }
 }
