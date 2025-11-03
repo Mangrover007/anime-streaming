@@ -52,14 +52,14 @@ router.post("/login", validatePayload(loginSchema), async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      sameSite: "lax",
+      sameSite: "none",
       secure: true
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: "lax",
+      sameSite: "none",
       secure: true
     });
 
@@ -141,14 +141,14 @@ router.post("/register", validatePayload(registerSchema), async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
-      sameSite: "lax",
+      sameSite: "none",
       secure: true
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: "lax",
+      sameSite: "none",
       secure: true
     });
 
@@ -185,13 +185,13 @@ router.get("/who", verifyToken, async (req, res) => {
 router.get("/logout", verifyToken, async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
   });
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
   });
 
