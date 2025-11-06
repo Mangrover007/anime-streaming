@@ -2,8 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useContext, useEffect, useRef, useState } from "react";
 import { PORTAL } from "../App";
-import { AUTH_URL } from "../api";
-import axios from "axios";
+import { AUTH_URL, COMMON_URL } from "../api";
 import type { Anime } from "../types";
 
 const Header = () => {
@@ -48,7 +47,7 @@ const Header = () => {
       controllerRef.current = new AbortController();
       const signal = controllerRef.current.signal;
 
-      const res = await axios.get(`https://koala-anime-backend.vercel.app/anime/all?q=${e.target.value}`, {
+      const res = await COMMON_URL.get(`/anime/all?q=${e.target.value}`, {
         signal: signal
       })
 
