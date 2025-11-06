@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { PORTAL } from "../../App";
+import { useEffect, useState } from "react";
 import { COMMON_URL, PROT_URL } from "../../api";
 import Button from "../Button";
 import type { CommentType } from "../../types";
@@ -9,7 +8,6 @@ import { useSearchParams } from "react-router-dom";
 
 const Comment = () => {
 
-  const { user } = useContext(PORTAL);
   const [writeComment, setWriteComment] = useState<string>("");
   const [commentList, setCommentList] = useState<CommentType[]>([]);
   const [searchParams] = useSearchParams();
@@ -41,10 +39,10 @@ const Comment = () => {
 
     <div
       style={{ gridArea: "box-3" }}
-      className="bg-[#1e1b2e] border-t border-gray-700 p-6 space-y-6"
+      className="bg-[#1e1b2e] border-t border-gray-700 p-6 space-y-6 h-[min(max-content, 100vh)]"
     >
       {
-        user && <>
+        <>
           {/* Comment Input */}
           <div className="space-y-2">
             <p className="text-sm text-gray-400">Leave a comment</p>

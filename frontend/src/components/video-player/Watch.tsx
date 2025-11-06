@@ -34,12 +34,14 @@ const Watch = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1e1b2e] text-white">
-      <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] h-screen grid-container">
-        <SeasonListComponent seasonList={seasonList} />
+    <div className="min-h-screen w-[100vw] bg-[#1e1b2e] text-white">
+      <div className="flex min-h-screen">
         <Episode />
-        <Ringo />
-        <Comment />
+        <div className="w-full mt-10">
+          <Ringo />
+          <Comment />
+        </div>
+        <SeasonListComponent seasonList={seasonList} />
       </div>
     </div>
   );

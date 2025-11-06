@@ -15,7 +15,7 @@ const SeasonListComponent = ({ seasonList }: SeasonListProps) => {
   return (
     <div
       style={{ gridArea: "box-4" }}
-      className="bg-[#2c293c] border-l border-gray-700 p-4 overflow-y-auto"
+      className="bg-[#2c293c] border-l border-gray-700 p-4 overflow-y-auto w-[400px]"
     >
       <div className="w-full">
         <div className="flex justify-between items-center">

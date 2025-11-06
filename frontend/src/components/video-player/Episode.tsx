@@ -49,7 +49,7 @@ const Episode = () => {
 
   return <>
     {/* Sidebar - Episode List */}
-    <aside className="bg-[#2c293c] border-r border-gray-700 p-4 overflow-y-auto" style={{ gridArea: "box-1" }}>
+    <aside className="bg-[#2c293c] border-r border-gray-700 p-4 overflow-y-auto w-[400px]" style={{ gridArea: "box-1" }}>
 
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-rose-200 mb-4">Episodes</h2>
