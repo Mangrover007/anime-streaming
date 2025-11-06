@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import ReactDOM from "react-dom";
 import { useParams } from "react-router-dom";
 import { ADMIN_URL } from "../../api";
 import Button from "../Button";
@@ -37,7 +37,7 @@ const AdminAddSeason = ({ onClose }: AdminAddSeasonProps) => {
     }
   }
 
-  return (
+  return ReactDOM.createPortal(
     <div
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50"
       onClick={(e) => e.stopPropagation()}
@@ -128,7 +128,8 @@ const AdminAddSeason = ({ onClose }: AdminAddSeasonProps) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.getElementById("modal")!
   );
 };
 

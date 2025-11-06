@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ADMIN_URL } from "../../api";
 import Button from "../Button";
+import ReactDOM from "react-dom";
 
 type AdminAddEpisodeProps = {
   onClose: () => void,
@@ -38,7 +39,7 @@ const AdminAddEpisode = ({ onClose }: AdminAddEpisodeProps) => {
     }
   }
 
-  return (
+  return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50" onClick={e => e.stopPropagation()}>
       <div className="bg-[#1c1a2e]/90 border border-[#2c2844] rounded-xl shadow-2xl p-8 w-[420px] relative overflow-hidden">
         {/* Gradient overlay */}
@@ -133,7 +134,8 @@ const AdminAddEpisode = ({ onClose }: AdminAddEpisodeProps) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.getElementById("modal")!
   );
 };
 
