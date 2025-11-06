@@ -16,16 +16,16 @@ import cookieParser from "cookie-parser";
 import { routes } from "./routes.mjs";
 // import { uploadVideo } from "./cloudinary.mjs";
 
-import nodemailer from "nodemailer";
-export const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASS
-  }
-});
+// import nodemailer from "nodemailer";
+// export const transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: process.env.SMTP_EMAIL,
+//     pass: process.env.SMTP_PASS
+//   }
+// });
 
 import multer, { memoryStorage } from "multer";
 import { uploadAvatar } from "./cloudinary.mjs";
@@ -68,10 +68,10 @@ app.post("/upload-avatar", verifyToken, upload.single("avatar"), async (req, res
   }
 });
 
-// app.post("/upload-episode", isAdmin, )
+// app.post("/upload-episode", isAdmin,         
 
-// app.listen(process.env.PORT, () => {
-//   console.log("Server is up and running :thumbs up:");
-// });
+app.listen(process.env.PORT, () => {
+  console.log("Server is up and running :thumbs up:");
+});
 
-export default app;
+// export default app;
