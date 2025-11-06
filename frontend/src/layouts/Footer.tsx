@@ -7,7 +7,7 @@ const Footer = () => {
     content: "",
   });
   const [message, setMessage] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false); // NEW state
+  const [loading] = useState<boolean>(false); // NEW state
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
