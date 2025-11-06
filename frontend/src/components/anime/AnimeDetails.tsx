@@ -350,7 +350,7 @@ const AnimeDetails = () => {
               <h3 className="text-3xl font-bold text-rose-100 mb-4">
                 Seasons
               </h3>
-              <EditButton type={"addSeason"} />
+              {isAdmin && <EditButton type={"addSeason"} />}
             </div>
             <ul className="space-y-4">
               {seasons && seasons.length > 0 ? (
