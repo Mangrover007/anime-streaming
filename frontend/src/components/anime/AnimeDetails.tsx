@@ -4,6 +4,7 @@ import { ADMIN_URL, COMMON_URL, PROT_URL } from "../../api";
 
 import { PORTAL } from "../../App";
 import type { Anime, Season } from "../../types";
+import EditButton from "../EditButton";
 
 const AnimeDetails = () => {
   const { animeName } = useParams<{ animeName: string }>();
@@ -345,7 +346,12 @@ const AnimeDetails = () => {
           </section>
 
           <section className="w-full md:w-[400px] bg-[#2d2a3a]/80 backdrop-blur-md p-6 rounded-lg shadow-md border border-gray-700">
-            <h3 className="text-3xl font-bold text-rose-100 mb-4">Seasons</h3>
+            <div className="flex justify-between">
+              <h3 className="text-3xl font-bold text-rose-100 mb-4">
+                Seasons
+              </h3>
+              <EditButton type={"addSeason"} />
+            </div>
             <ul className="space-y-4">
               {seasons && seasons.length > 0 ? (
                 seasons.map((season) => (
