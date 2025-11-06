@@ -2,6 +2,7 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { getCommentSchema } from "../../schemas/common/comment.mjs";
 const prisma = new PrismaClient();
+import { v2 as cloudinary } from "cloudinary";
 
 // TODO: Error Handling
 
@@ -49,7 +50,7 @@ router.get("/",
           user: {
             id: comment.user.id,
             username: comment.user.username,
-            profilePicture: comment.user.profilePicture
+            profilePicture: cloudinary.url(comment.user.profilePicture)
           }
         })),
         metadata: ""
