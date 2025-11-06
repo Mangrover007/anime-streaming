@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Favorites from "./Favorites";
 import { PORTAL } from "../../App";
 import Profile from "./Profile";
-import axios from "axios";
 import { COMMON_URL } from "../../api";
 
 const Settings = () => {
