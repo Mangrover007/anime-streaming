@@ -134,7 +134,7 @@ const Header = () => {
           </> :
             <>
               <button className="text-white cursor-pointer relative" onClick={() => nav("/settings")}>
-                <img src="/vite.svg" alt="" />
+                <img src={user.profilePicture || "/vite.svg"} alt="" />
               </button>
               <button className="px-4 py-2 rounded-full cursor-pointer text-white hover:text-pink-400 transition" onClick={handleLogout}>
                 Log out
