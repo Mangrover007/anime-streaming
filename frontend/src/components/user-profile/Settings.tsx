@@ -4,6 +4,7 @@ import Favorites from "./Favorites";
 import { PORTAL } from "../../App";
 import Profile from "./Profile";
 import axios from "axios";
+import { COMMON_URL } from "../../api";
 
 const Settings = () => {
   const { user } = useContext(PORTAL);
@@ -38,7 +39,7 @@ const Settings = () => {
     if (!avatar) return
     const data = new FormData();
     data.append("avatar", avatar);
-    const res = await axios.post("https://koala-anime-backend.vercel.app/upload-avatar", data, {
+    const res = await COMMON_URL.post("/upload-avatar", data, {
       headers: {
         "Content-Type": "multipart/form-data"
       },
