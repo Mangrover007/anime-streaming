@@ -192,6 +192,7 @@ router.get("/logout", verifyToken, async (req, res) => {
     sameSite: "none",
     partitioned: true,
     path: "/",
+    secure: true
   });
 
   res.clearCookie("refreshToken", {
@@ -199,6 +200,7 @@ router.get("/logout", verifyToken, async (req, res) => {
     sameSite: "none",
     partitioned: true,
     path: "/",
+    secure: true
   });
 
   res.status(200).send({ message: "Logged out successfully" });
