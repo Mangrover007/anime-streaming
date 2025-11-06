@@ -23,7 +23,7 @@ const Signup = () => {
     try {
       const res = await AUTH_URL.post("/register", registerData);
       if (res.status === 201) {
-        setMessage("Email registered. Please check your email to veirfy it and then proceed to log in.");
+        setMessage("Email registered. Please continue to log in.");
       }
     } catch (error) {
       console.error("Signup failed:", error);

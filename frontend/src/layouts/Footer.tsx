@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { PROT_URL } from "../api";
 
 const Footer = () => {
   const [formData, setFormData] = useState({
@@ -17,20 +16,23 @@ const Footer = () => {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      const res = await PROT_URL.post("/email", formData);
-      if (res.status === 200) {
-        setMessage("Message sent successfully!");
-        setFormData({ senderEmail: "", subject: "", content: "" });
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage("Something went wrong. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // setMessage("");
+    // try {
+    //   // const res = await PROT_URL.post("/email", formData);
+    //   if (res.status === 200) {
+    //     setMessage("Message sent successfully!");
+    //     setFormData({ senderEmail: "", subject: "", content: "" });
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    //   setMessage("Something went wrong. Please try again later.");
+    // } finally {
+      // setLoading(false);
+    // }
+    setMessage("Message sent successfully!");
+    // setLoading(false);
+    setFormData({ senderEmail: "", subject: "", content: "" });
   }
 
   return (
